@@ -33,6 +33,7 @@ DishQuest is a full-stack web application designed to help users discover, explo
    ```env
    DB_USER = your_MongoDB_username
    DB_PWD  = your_MongoDB_password
+   ```
 6. npm start to run server on localhost:3000
 
 ## Technologies Used
