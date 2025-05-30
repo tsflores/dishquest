@@ -2,6 +2,9 @@
 
 DishQuest is a full-stack web application designed to help users discover, explore, and share dishes from around the world. The project is organized into a `client` (frontend) and a `server` (backend), leveraging modern web technologies for a seamless user experience.
 
+## Live Demo
+[DishQuest](http://104.131.189.144:3000/dishquest)
+
 ## Features
 
 - User authentication
