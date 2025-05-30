@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<body>
+
+    <!-- header component  -->
+    <app-navigation />
+
+    <!-- static information on the landing page -->
+    <main>
+        <div class="class container-sm">
+        <h1 class="display-6 m-0 ps-4">Welcome to DishQuest!</h1>
+        <p class="lead ps-4">Share your favorite recipes with our community.</p>
+        <h3 class="fw-bold ps-4 mb-1" style="color: #004E89;">Recipe Collection <small class="h5 fst-italic">({{ recipeCount }}
+                Recipes Currently Available)</small></h3>
+        <hr class="opacity-100 border-3 mb-0 mt-0 mx-4" style="border-color: #ff5733;">
+        </div>
+        
+        <div class ="container-sm">
+            <ul class ="d-flex flex-wrap justify-content-center justify-content-lg-start ps-1 mt-1">
+                @for(recipe of recipeList; track recipe._id){
+                <app-recipe [recipe]="recipe" [imagebaseurl]="recipeImageURL" />
+                }
+            </ul>
+        </div>
+    </main>
+
+    <!-- footer component -->
+    <app-footer />
+</body>
+

@@ -1,0 +1,10 @@
+/* main{
+    height: 75vh;
+} */
+
+form button {
+  background-color: #bf2e1a;
+  border-style: none;
+  color: white;
+  font-weight: bold;
+}

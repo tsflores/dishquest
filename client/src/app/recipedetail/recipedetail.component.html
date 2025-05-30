@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<app-navigation />
+
+<main class="container mt-4">
+  <!-- display when recipe object is true -->
+  <div *ngIf="recipe">
+
+    <div class="row justify-content-between">
+      <!-- Content column - appears first in HTML for mobile but displays on left on larger screens -->
+      <div class="col-xl-4 col-lg-5 col-md-7 order-md-1 order-2">
+        <div class="text-center text-md-start">
+          <h1 class="display-6 fw-bold">{{ recipe.name.charAt(0).toUpperCase() + recipe.name.slice(1) }}</h1>
+          <div class="mt-3">
+            <h5 class="m-0 pb-3 ps-1"><strong>By: </strong> {{ recipe.chef.charAt(0).toUpperCase() +
+              recipe.chef.slice(1) }}</h5>
+            <h5 class="m-0 pb-3 ps-1"><strong>Meal: </strong>{{ recipe.meal.charAt(0).toUpperCase() +
+              recipe.meal.slice(1) }}</h5>
+
+            <h5 class="m-0 pb-3 ps-1"><strong>Prep Time: </strong> {{ recipe.preptime }} minutes</h5>
+            <h5 class="m-0 pb-3 ps-1"><strong>Cook Time: </strong> {{ recipe.cooktime }} minutes</h5>
+            @if(recipe.updatedAt){
+            <h5 class="m-0 pb-3 ps-1"><strong>Last Updated: </strong>{{ recipe.updatedAt.toLocaleDateString("en-US")}}
+            </h5>
+            } @else {
+            <h5 class="m-0 pb-3 ps-1"><strong>Last Updated: </strong>{{ recipe.createdAt.toLocaleDateString("en-US")}}
+            </h5>
+            }
+            <!-- redirect to the recipe PDF in a new window -->
+            <div class="mb-3">
+              <a class="fs-5 ps-1" [href]="recipedisplayPDFurl" target="_blank">Recipe Instructions</a>
+            </div>
+            <!-- toggle between adding or removing recipe from favorites -->
+            @if(!recipe.favorite){
+            <button class="btn btn-success mb-3" (click)="updateRecipe(true)"><i class="bi bi-plus-lg"></i>My Recipe Box</button>
+            }
+            @else {
+              <button class="btn btn-secondary mb-3" (click)="updateRecipe(false)"><i class="bi bi-x-circle"></i> My Recipe Box</button>
+            }
+            <div *ngIf="!editing">
+              <div>
+                <button class="btn btn-primary m-1 btn-lg" (click)="setEditMode(true)"><i class="bi bi-pencil-fill"></i> Description</button>
+                <button type="button" class="btn btn-danger btn-lg" [disabled]="isDeleting" (click)="deleteRecipe()">
+                  <mat-spinner *ngIf="isDeleting" diameter="50" class="button-spinner"></mat-spinner>
+                  <span *ngIf="!isDeleting"> <i class="bi bi-trash3-fill"></i> Recipe </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image column - appears second in HTML but displays on right on larger screens -->
+      <div class="col-xl-7 col-lg-6 col-md-5 order-md-2 order-1 mb-4">
+        <img [src]="recipedisplayurl" [alt]="recipe.name" class="rounded img-fluid mx-auto pb-3" />
+        <h5 class="mb-3 ps-4">{{ recipe.description.charAt(0).toUpperCase() + recipe.description.slice(1) }}</h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- display when editing is true, onClick event from Edit Recipe button -->
+  <div *ngIf="editing">
+    <form #form="ngForm" (ngSubmit)="updateRecipe(form.value)">
+      <div class="form-group">
+        <div class="mb-3">
+          <label for="description" class="form-label lead fw-bold">New Recipe Description:</label>
+          <textarea rows="2" maxlength="300" id="description" name="description" class="form-control text-primary-emphasis"
+            [ngModel]="recipe.description"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg m-1">Update Description</button>
+      <button type="button" class="btn btn-secondary btn-lg m-1" (click)="setEditMode(false)">Cancel</button>
+    </form>
+
+
+
+  </div>
+</main>
+
+<app-footer />

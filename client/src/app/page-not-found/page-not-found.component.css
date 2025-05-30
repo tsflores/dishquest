@@ -1,0 +1,42 @@
+* {
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 1480px;
+  }
+  
+  body {
+    height: 100vh;
+    margin: 0 2vw;
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* Styling for the error page */
+  .error-container {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 75vh;
+  }
+  
+  .error-container h1 {
+    font-size: 6rem;
+    color: #ff5733;
+    font-weight: 600;
+  }
+  
+  .error-container h3,
+  p {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .error-container p {
+    font-size: 1.5rem;
+    width: 30%;
+    text-align: center;
+  }

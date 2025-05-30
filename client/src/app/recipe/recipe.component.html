@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<!-- capture recipe image, name, contributor and total time to complete -->
+<li class="d-flex flex-column m-0 pb-1 text-center list-unstyled">
+  <a routerLink = "/recipedetail/{{ recipe._id }}">
+  <img class="rounded m-3" [src]="recipe.imageDisplay" width="250" />
+  </a>
+  
+    <p class="mb-0">{{ recipe.name }}</p>
+    <p class="mb-0">By: {{ recipe.chef }}</p>
+    <p class="mb-0">Total Time: {{ totalTime }} min</p>
+  
+</li>

@@ -1,0 +1,7 @@
+
+/* control the hover over a link */
+.navbar .nav-link.hover-primary:hover {
+    color: #0056b3;
+    background-color: rgba(0, 123, 255, 0.1); /* Light blue background */
+    border-bottom: 2px solid #0056b3; /* Underline effect */
+  }

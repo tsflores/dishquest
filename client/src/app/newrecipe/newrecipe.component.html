@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<body>
+    <app-navigation />
+
+    <main class="container-sm">
+        <h3>Add a new recipe to our collection</h3>
+        <div class="col-lg-10">
+            <form #newRecipeForm="ngForm" (ngSubmit)="save(newRecipeForm)">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Recipe Name:</label>
+                    <input required id="name" #name="ngModel" placeholder="Enter recipe name" name="name" class="form-control" [(ngModel)]="recipe.name">
+                    <!-- apply the form validation component for each field -->
+                    <app-validation-messages [control]="name" fieldName="Name"></app-validation-messages>
+                </div>
+                <div class="mb-3">
+                    <label for="chef" class="form-label">Chef (or publisher):</label>
+                    <input required #chef="ngModel" id="chef" placeholder="By who" name="chef" class="form-control" [(ngModel)]="recipe.chef">
+                    <app-validation-messages [control]="chef" fieldName="Field"></app-validation-messages>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea required #description="ngModel" rows="2" maxlength="300" id="description"
+                        placeholder="Enter a brief description (max length 300 characters)" name="description"
+                        class="form-control" [(ngModel)]="recipe.description"></textarea>
+                        <app-validation-messages [control]="description" fieldName="Description"></app-validation-messages>
+                </div>
+                <div class="mb-3">
+                    <label for="meal" class="form-label">Meal Type:</label>
+                    <select name="meal" id="meal" class="form-select" [(ngModel)]="recipe.meal">
+                        <option value="breakfast" selected> Breakfast</option>
+                        <option value="lunch"> Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="appetizer">Appetizer</option>
+                        <option value="side">Side Dish</option>
+                        <option value="drinks">Drinks</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="preptime" class="form-label">Prep Time (min:)</label>
+                    <input type="number" min = "0" required #prep="ngModel" id="preptime" name="preptime" placeholder="Enter prep time in minutes" class="form-control" [(ngModel)]="recipe.preptime">
+                    <app-validation-messages [control]="prep" fieldName="Prep time"></app-validation-messages>
+                </div>
+                <div class="mb-3">
+                    <label for="cook" class="form-label">Cook Time (min:)</label>
+                    <input type="number" min = "0" required #cook = "ngModel" id="cook" name="cooktime" placeholder="Enter cook time in minutes" class="form-control" [(ngModel)]="recipe.cooktime">
+                    <app-validation-messages [control]="cook" fieldName="Cook time"></app-validation-messages>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload Image:</label>
+                    <input type="file" accept="image/*" name="image" required id="image" class="form-control" (change)="handleFileInput($event.target, 'image')">
+                </div>
+                <div class="mb-3">
+                    <label for="pdf" class="form-label">Upload Recipe (pdf):</label>
+                    <input type="file" accept="application/pdf" name="recipePDF" required id="pdf" class="form-control" (change)="handleFileInput($event.target, 'pdf')">
+                </div>
+                <div class="mb-4 text-center">
+                    <button type="submit" class="btn" [disabled]="!newRecipeForm.valid">Submit Recipe</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <app-footer />
+</body>
