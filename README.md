@@ -4,9 +4,9 @@ DishQuest is a full-stack web application designed to help users discover, explo
 
 ## Features
 
-- Browse and search for dishes by cuisine, ingredients, or location
-- User authentication and profile management
-- Add, edit, and review dishes
+- User authentication
+- Add, edit, and review recipes
+- Add to favorites
 - Responsive design for desktop and mobile
 - RESTful API backend
 
