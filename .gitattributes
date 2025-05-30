@@ -1,0 +1,3 @@
+ # Treat all JavaScript files in dist as binary to prevent line ending conversion
+dist/**/*.js binary
+dist/**/*.js.map binary
