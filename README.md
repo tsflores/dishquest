@@ -30,6 +30,7 @@ DishQuest is a full-stack web application designed to help users discover, explo
 3. create MongoDB collection within your cluster
 4. modify app.js mongoose.connect as needed
 5. create .env file with MongoDB credentials
+
 **.env file example**
 - DB_USER = your_MongoDB_username
 - DB_PWD  = your_MongoDB_password
