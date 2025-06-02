@@ -6,7 +6,6 @@ import { NavigationComponent } from '../navigation/navigation.component';
   selector: 'app-about',
   imports: [FooterComponent, NavigationComponent],
   templateUrl: './about.component.html',
-  styleUrl: './about.component.css',
   standalone: true
 })
 export class AboutComponent {
