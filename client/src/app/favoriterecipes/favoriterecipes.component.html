@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<body>
+<div class="d-flex flex-column min-vh-100">
 
     <!-- header component  -->
     <app-navigation />
 
     <!-- static information on the favorites page -->
-    <main>
+    <main class="container-sm flex-grow-1 d-flex align-items-start flex-column">
         <div class="class container-sm">
         <h1 class="display-6 m-0 ps-4">Saved Recipes</h1>
         @if(recipeCount === 0){
@@ -31,4 +31,4 @@
 
     <!-- footer component -->
     <app-footer />
-</body>
+</div>

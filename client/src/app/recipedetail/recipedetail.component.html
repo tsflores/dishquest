@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-
+<div class="d-flex flex-column min-vh-100">
 <app-navigation />
 
-<main class="container mt-4">
+<main class="container-sm flex-grow-1 d-flex align-items-start flex-column">
   <!-- display when recipe object is true -->
   <div *ngIf="recipe">
 
@@ -78,3 +78,4 @@
 </main>
 
 <app-footer />
+</div>
