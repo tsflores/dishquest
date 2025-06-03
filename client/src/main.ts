@@ -9,12 +9,13 @@ import { environment } from "./environments/environment";
 import { provideRouter, type Routes } from "@angular/router";
 import { HomeComponent } from "./app/home/home.component";
 import { PageNotFoundComponent } from "./app/page-not-found/page-not-found.component";
-import { UnderConstructionComponent } from "./app/under-construction/under-construction.component";
 import { RecipedetailComponent } from "./app/recipedetail/recipedetail.component";
 import { FormsModule, NgModel } from "@angular/forms";
 import { NewrecipeComponent } from "./app/newrecipe/newrecipe.component";
 import { FavoriterecipesComponent } from "./app/favoriterecipes/favoriterecipes.component";
 import { AboutComponent } from "./app/about/about.component";
+import { LoginComponent } from "./app/login/login.component";
+import { SignUpComponent } from "./app/sign-up/sign-up.component";
 
 if (environment.production) {
 	enableProdMode();
@@ -27,7 +28,8 @@ const routes: Routes = [
 	{ path: "about", component: AboutComponent },
 	{ path: "addrecipe", component: NewrecipeComponent },
 	{ path: "recipebox", component: FavoriterecipesComponent },
-	{ path: "login", component: UnderConstructionComponent },
+	{ path: "login", component: LoginComponent },
+	{path: 'signup', component: SignUpComponent},
 	{ path: "recipedetail/:id", component: RecipedetailComponent},
 	{ path: "**", component: PageNotFoundComponent }
 ];

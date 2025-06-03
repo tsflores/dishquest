@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<div class="d-flex flex-column min-vh-100">
+    <app-navigation />
+
+    <main class="container-sm flex-grow-1 d-flex align-items-start">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-6 col-lg-4 pt-4">
+                <!-- Welcome Back Header -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">Welcome Back</h2>
+                    <p class="text-muted">Please sign in to your account</p>
+                </div>
+
+                <!-- Login Form -->
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input id="username" class="form-control" formControlName="username" type="text"
+                                    placeholder="Enter your username" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Password</label>
+                                <input id="password" class="form-control" formControlName="password" type="password"
+                                    placeholder="Enter your password" />
+                            </div>
+
+                            <div class="d-grid">
+                                <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary btn-lg">
+                                    Sign In
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Optional: Forgot Password Link -->
+                <div class="text-center mt-3">
+                    <a href="#" class="text-decoration-none">Forgot your password?</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <app-footer />
+</div>
