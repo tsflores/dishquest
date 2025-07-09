@@ -5,6 +5,7 @@ const path = require('node:path');
 const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
 const api_recipes = require('./routes/api/api-recipes');
+const authRoutes = require('./routes/auth/authenticate');
 require('dotenv').config();
 
 const app = express();
@@ -27,6 +28,8 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 //have Express automatically deliver index.html from public directory for purposes of testing API
 app.use('/', express.static(path.join(__dirname, 'public')));
+
+app.use('/api/auth', authRoutes);
 
 //set up middleware for the api route
 app.use('/api/recipes', api_recipes);
