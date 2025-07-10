@@ -39,17 +39,11 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.signupForm = new FormGroup({
-      'name': new FormControl('', [Validators.required]),
-      'email': new FormControl('', [Validators.required]),
-      'username': new FormControl('', [Validators.required]),
-      'password': new FormControl('', [Validators.required])
-    })
-
+  
     //clear any previous messages upon initialization
     this.errorMessage = '';
     this.successMessage = '';
-  }
+    }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -136,9 +130,9 @@ export class SignUpComponent implements OnInit {
     }
   }
 
-  getFormControlError(controlName: string): any {
-    const control = this.signupForm.get(controlName);
-    return control?.errors && (control.dirty || control.touched) ? control.errors : null;
-  }
+  // getFormControlError(controlName: string): any {
+  //   const control = this.signupForm.get(controlName);
+  //   return control?.errors && (control.dirty || control.touched) ? control.errors : null;
+  // }
 
 }

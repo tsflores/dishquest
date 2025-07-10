@@ -1,12 +1,12 @@
 
-
+require('dotenv').config();
 const express = require('express');
 const path = require('node:path');
 const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
 const api_recipes = require('./routes/api/api-recipes');
 const authRoutes = require('./routes/auth/authenticate');
-require('dotenv').config();
+
 
 const app = express();
 

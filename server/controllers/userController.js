@@ -3,6 +3,9 @@ const User = require("../models/userModel");
 
 const SECRET = process.env.JWT_SECRET; 
 
+// Add this debug line to check if SECRET is loaded
+console.log("JWT_SECRET loaded:", !!SECRET, "Length:", SECRET?.length);
+
 class AuthController {
   static async register(req, res) {
     try {
