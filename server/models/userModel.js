@@ -6,7 +6,8 @@ const Schema = mongoose.Schema;
 //create a new schema for a user
 const userSchema = new Schema({
 	username: {type: String, required: true, unique: true, minlength: 8},
-	name: { type: String, required: true },
+  email: {type: String, required: true, unique: true},
+	name: { type: String, required: true, minlength: 2 },
 	password: { type: String, required: true, minlength: 8}
 });
 

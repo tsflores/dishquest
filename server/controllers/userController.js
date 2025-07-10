@@ -6,8 +6,8 @@ const SECRET = process.env.JWT_SECRET;
 class AuthController {
   static async register(req, res) {
     try {
-      const { username, name, password } = req.body;
-      const user = new User({ username, name, password });
+      const { username, email, name, password } = req.body;
+      const user = new User({ username, email, name, password });
       await user.save();
       res.status(201).json({ message: "User registered successfully." });
     } catch (err) {

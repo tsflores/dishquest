@@ -12,32 +12,164 @@
                     <p class="text-muted">Create an account to save recipes to your personal Recipe Box</p>
                 </div>
 
+                <!-- Error/Success Messages -->
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ errorMessage }}
+                    <button type="button" class="btn-close" aria-label="Close" (click)="errorMessage = ''"></button>
+                </div>
+
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ successMessage }}
+                    <button type="button" class="btn-close" aria-label="Close" (click)="successMessage = ''"></button>
+                </div>
+
                 <!-- Signup Form -->
                 <div class="card shadow-sm">
                     <div class="card-body p-4">
                         <form (ngSubmit)="onSubmit()" [formGroup]="signupForm">
+
+                            <!-- users first name -->
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input id="name" class="form-control" formControlName="name" type="text"
-                                    placeholder="Enter your first name" />
+                                <input id="name" class="form-control"
+                                    [class.is-invalid]="signupForm.get('name')?.invalid && (signupForm.get('name')?.dirty || signupForm.get('name')?.touched)"
+                                    [class.is-valid]="signupForm.get('name')?.valid && (signupForm.get('name')?.dirty || signupForm.get('name')?.touched)"
+                                    formControlName="name" type="text" placeholder="Enter your first name" />
+                                <div *ngIf="signupForm.get('name')?.invalid && (signupForm.get('name')?.dirty || signupForm.get('name')?.touched)"
+                                    class="invalid-feedback">
+                                    <div *ngIf="signupForm.get('name')?.errors?.['required']">
+                                        Name is required.
+                                    </div>
+                                    <div *ngIf="signupForm.get('name')?.errors?.['minlength']">
+                                        Name must be at least 2 characters long.
+                                    </div>
+                                </div>
                             </div>
-                            
+
+                            <!-- user's email -->
                             <div class="mb-3">
-                                <label for="username" class="form-label">Email</label>
-                                <input id="username" class="form-control" formControlName="username" type="text"
-                                    placeholder="Enter your email address" />
+                                <label for="email" class="form-label">Email</label>
+                                <input id="email" class="form-control"
+                                    [class.is-invalid]="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)"
+                                    [class.is-valid]="signupForm.get('email')?.valid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)"
+                                    formControlName="email" type="email" placeholder="Enter your email address" />
+                                <div *ngIf="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)"
+                                    class="invalid-feedback">
+                                    <div *ngIf="signupForm.get('email')?.errors?.['required']">
+                                        Email is required.
+                                    </div>
+                                    <div *ngIf="signupForm.get('email')?.errors?.['email']">
+                                        Enter a valid Email address.
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mb-4">
+                            <!-- User's selection of a username for login purposes -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input id="username" class="form-control"
+                                    [class.is-invalid]="signupForm.get('username')?.invalid && (signupForm.get('username')?.dirty || signupForm.get('username')?.touched)"
+                                    [class.is-valid]="signupForm.get('username')?.valid && (signupForm.get('username')?.dirty || signupForm.get('username')?.touched)"
+                                    formControlName="username" type="text"
+                                    placeholder="Choose a username (minimum 8 characters)" />
+                                <div *ngIf="signupForm.get('username')?.invalid && (signupForm.get('username')?.dirty || signupForm.get('username')?.touched)"
+                                    class="invalid-feedback">
+                                    <div *ngIf="signupForm.get('username')?.errors?.['required']">
+                                        Username is required.
+                                    </div>
+                                    <div *ngIf="signupForm.get('username')?.errors?.['minlength']">
+                                        Username must be at least 8 characters long.
+                                    </div>
+                                </div>
+                                <div *ngIf="signupForm.get('username')?.valid && (signupForm.get('username')?.dirty || signupForm.get('username')?.touched)"
+                                    class="valid-feedback">
+                                    Username looks good!
+                                </div>
+                            </div>
+
+                            <!-- user's password for future login -->
+                            <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input id="password" class="form-control" formControlName="password" type="password"
-                                    placeholder="Enter your password" />
+                                <div class="input-group">
+                                    <input 
+                                        id="password" 
+                                        class="form-control"
+                                        [class.is-invalid]="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)"
+                                        [class.is-valid]="signupForm.get('password')?.valid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)"
+                                        formControlName="password" 
+                                        [type]="showPassword ? 'text' : 'password'"
+                                        placeholder="Enter your password (8+ characters)" />
+                                    <button 
+                                        class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        (click)="togglePasswordVisibility()"
+                                        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+                                        <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                                    </button>
+                                </div>
+                                <div *ngIf="signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)" 
+                                     class="invalid-feedback">
+                                    <div *ngIf="signupForm.get('password')?.errors?.['required']">
+                                        Password is required.
+                                    </div>
+                                    <div *ngIf="signupForm.get('password')?.errors?.['minlength']">
+                                        Password must be at least 8 characters long.
+                                    </div>
+                                    <div *ngIf="signupForm.get('password')?.errors?.['pattern']">
+                                        Password must contain at least one uppercase letter, one lowercase letter, one number, and special character (!#$%?).
+                                    </div>
+                                </div>
+                                <div *ngIf="signupForm.get('password')?.valid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)" 
+                                     class="valid-feedback">
+                                    Password strength: Good!
+                                </div>
+                                <!-- Password Requirements -->
+                                <div class="form-text">
+                                    <small class="text-muted">
+                                        Password must be at least 8 characters long and contain uppercase, lowercase, and numbers.
+                                    </small>
+                                </div>
                             </div>
 
+                            <!-- Confirm Password Field -->
+                            <div class="mb-4">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input 
+                                    id="confirmPassword" 
+                                    class="form-control"
+                                    [class.is-invalid]="signupForm.get('confirmPassword')?.invalid && (signupForm.get('confirmPassword')?.dirty || signupForm.get('confirmPassword')?.touched)"
+                                    [class.is-valid]="signupForm.get('confirmPassword')?.valid && (signupForm.get('confirmPassword')?.dirty || signupForm.get('confirmPassword')?.touched)"
+                                    formControlName="confirmPassword" 
+                                    type="password"
+                                    placeholder="Confirm your password" />
+                                <div *ngIf="signupForm.get('confirmPassword')?.invalid && (signupForm.get('confirmPassword')?.dirty || signupForm.get('confirmPassword')?.touched)" 
+                                     class="invalid-feedback">
+                                    <div *ngIf="signupForm.get('confirmPassword')?.errors?.['required']">
+                                        Please confirm your password.
+                                    </div>
+                                    <div *ngIf="signupForm.get('confirmPassword')?.errors?.['passwordMismatch']">
+                                        Passwords do not match.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
                             <div class="d-grid">
-                                <button [disabled]="!signupForm.valid" type="submit" class="btn btn-primary btn-lg">
-                                    Sign Up
+                                <button 
+                                    [disabled]="!signupForm.valid || isSubmitting" 
+                                    type="submit" 
+                                    class="btn btn-primary btn-lg">
+                                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    {{ isSubmitting ? 'Creating Account...' : 'Sign Up' }}
                                 </button>
+                            </div>
+
+                            <!-- Login Link -->
+                            <div class="text-center mt-3">
+                                <p class="text-muted">
+                                    Already have an account? 
+                                    <a routerLink="/login" class="text-primary text-decoration-none">Sign in here</a>
+                                </p>
                             </div>
                         </form>
                     </div>
