@@ -41,6 +41,14 @@ export class AuthService {
     this.checkAuthStatus();
   }
 
+  get currentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  get isAuthenticated(): boolean {
+    return this.currentUser !== null;
+  }
+
   register(userData: RegisterRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, userData, {
       headers: new HttpHeaders({
@@ -70,11 +78,20 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return this.isAuthenticated;
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getUserDisplayName(): string {
+    if (this.currentUser && this.currentUser.name) {
+      console.log("username:", this.currentUser.name);
+      return this.currentUser.name.split(' ')[0]; // Return first name only
+    }
+    console.log("username none");
+    return '';
   }
 
   private checkAuthStatus(): void {

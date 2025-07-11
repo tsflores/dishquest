@@ -1,10 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const SECRET = process.env.JWT_SECRET; 
-
-// Add this debug line to check if SECRET is loaded
-console.log("JWT_SECRET loaded:", !!SECRET, "Length:", SECRET?.length);
+const SECRET = process.env.JWT_SECRET;
 
 class AuthController {
   static async register(req, res) {
@@ -33,11 +30,18 @@ class AuthController {
         return res.status(401).json({ error: "Invalid username or password." });
       }
 
-      const token = jwt.sign({ id: user._id, username: user.username }, SECRET, {
+      const token = jwt.sign({ id: user._id, username: user.username, email: user.email, name: user.name }, SECRET, {
         expiresIn: "1d",
       });
 
-      res.json({ token });
+      res.json({
+        token, user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          name: user.name
+        }
+      });
     } catch (err) {
       console.error("Login error:", err);
       res.status(500).json({ error: "Internal server error" });

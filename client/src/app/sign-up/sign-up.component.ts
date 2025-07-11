@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { FooterComponent } from '../footer/footer.component';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, Validators, AbstractControl, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../auth.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [NavigationComponent, FooterComponent, ReactiveFormsModule, NgIf],
+  imports: [NavigationComponent, FooterComponent, ReactiveFormsModule, NgIf, RouterLink],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css'
 })
@@ -57,9 +58,9 @@ export class SignUpComponent implements OnInit {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasLowerCase = /[a-z]/.test(value);
     const hasNumeric = /[0-9]/.test(value);
-    //const hasSpecialChar = /[!#?$*]/.test(value);
+    const hasSpecialChar = /[!#?$*]/.test(value);
 
-    const passwordValid = hasUpperCase && hasLowerCase && hasNumeric;
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumeric && hasSpecialChar;
 
     if (!passwordValid) {
       return { pattern: true };
@@ -111,12 +112,14 @@ export class SignUpComponent implements OnInit {
 
           // Redirect to home page after 2 seconds
           setTimeout(() => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/login']);
           }, 2000);
         },
         error: (error) => {
           this.errorMessage = error.error?.error || 'An error occurred during registration. Please try again.';
           console.error('Registration error:', error);
+          this.signupForm.reset();
+          this.isSubmitting = false;
         },
         complete: () => {
           this.isSubmitting = false;
@@ -129,10 +132,4 @@ export class SignUpComponent implements OnInit {
       });
     }
   }
-
-  // getFormControlError(controlName: string): any {
-  //   const control = this.signupForm.get(controlName);
-  //   return control?.errors && (control.dirty || control.touched) ? control.errors : null;
-  // }
-
 }

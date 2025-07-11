@@ -18,8 +18,15 @@
                     <li class="nav-item"><a class="nav-link text-primary hover-primary fs-5 pe-3" routerLink = "/addrecipe">Add to Collection</a></li>
                     <li class="nav-item"><a class="nav-link text-primary hover-primary fs-5 pe-3" routerLink = "/recipebox">My Recipe Box</a></li>
                     <li class="nav-item"><a class="nav-link text-primary hover-primary fs-5 pe-3" routerLink = "/about">About</a></li>
-                    <li class="nav-item"><a class="nav-link text-primary hover-primary fs-5 pe-3" routerLink = "/login">Login</a></li>
-                    <li class="nav-item"><a class="nav-link bg-danger text-white rounded-pill px-3 py-2 fs-5 fw-semibold hover-red-pill" routerLink = "/signup" style="transition: all 0.3s ease;">Sign-up</a></li>
+
+                    <!-- case where no user is logged in -->
+                    <li class="nav-item" *ngIf = "!isAuthenticated"><a class="nav-link text-primary hover-primary fs-5 pe-3" routerLink = "/login">Login</a></li>
+
+                    <!-- case where user is logged in and authenticated -->
+                    <li class="nav-item" *ngIf = "isAuthenticated"><a class="pointer nav-link text-primary hover-primary fs-5 pe-3" (click) = "logout()">Logout</a></li>
+
+                    <!-- If user is authenticated, show username -->
+                    <li class="nav-item" *ngIf = "isAuthenticated"><span class="nav-link text-success fs-5 pe-3 fw-semibold">Hello, {{ getUserDisplayName() }}</span></li>
                 </ul>
             </div>
         </nav>

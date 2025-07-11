@@ -5,10 +5,11 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from "@angula
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../auth.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [NavigationComponent, FooterComponent, ReactiveFormsModule, NgIf],
+  imports: [NavigationComponent, FooterComponent, ReactiveFormsModule, NgIf, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
