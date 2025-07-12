@@ -27,9 +27,29 @@ export class RecipeService {
     return this.http.get<Recipe>(`${this.apiURL}api/recipes/${id}`).pipe(catchError(this.handleError));
   }
 
-  getRecipeFavorites(): Observable<Recipe>{
-    return this.http.get<Recipe>(`${this.apiURL}api/recipes/favorites`).pipe(catchError(this.handleError));
+  // Get user's favorite recipes
+  getUserFavorites(userId: string): Observable<Recipe[]> {
+    return this.http.get<Recipe[]>(`${this.apiURL}api/recipes/favorites/${userId}`).pipe(catchError(this.handleError));
   }
+
+  // Add recipe to user's favorites
+  addToFavorites(userId: string, recipeId: string): Observable<any> {
+    return this.http.post(`${this.apiURL}api/recipes/favorites/${userId}/${recipeId}`, {}).pipe(catchError(this.handleError));
+  }
+
+  // Remove recipe from user's favorites
+  removeFromFavorites(userId: string, recipeId: string): Observable<any> {
+    return this.http.delete(`${this.apiURL}api/recipes/favorites/${userId}/${recipeId}`).pipe(catchError(this.handleError));
+  }
+
+  // Check if recipe is favorited by user
+  checkFavoriteStatus(userId: string, recipeId: string): Observable<{isFavorited: boolean}> {
+    return this.http.get<{isFavorited: boolean}>(`${this.apiURL}api/recipes/favorites/${userId}/${recipeId}/status`).pipe(catchError(this.handleError));
+  }
+
+  // getRecipeFavorites(): Observable<Recipe[]> {
+  //   throw new Error('getRecipeFavorites() is deprecated. Use getUserFavorites(userId) instead.');
+  // }
 
   //create method to insert new recipe record into database
   createRecipe(recipe: FormData): Observable<Recipe>{

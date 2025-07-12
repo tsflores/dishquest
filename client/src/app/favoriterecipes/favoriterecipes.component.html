@@ -8,20 +8,32 @@
     <!-- static information on the favorites page -->
     <main class="container-sm flex-grow-1 d-flex align-items-start flex-column">
         <div class="class container-sm">
-        <h1 class="display-6 m-0 ps-4">Saved Recipes</h1>
-        @if(recipeCount === 0){
-        <p class="ps-4 mb-1 fst-italic" style="color: #004E89;">Add Your Favorites to your Recipe Box</p>
-        }
-        @else if(recipeCount === 1){
+            <h1 class="display-6 m-0 ps-4">Saved Recipes</h1>
+
+            <!-- Loading state -->
+            @if(loading) {
+            <p class="ps-4 mb-1 fst-italic" style="color: #004E89;">Loading your favorite recipes...</p>
+            }
+
+            <!-- Error state -->
+            @else if(error) {
+            <p class="ps-4 mb-1 text-danger">{{ error }}</p>
+            }
+
+
+            @else if(recipeCount === 0){
+            <p class="ps-4 mb-1 fst-italic" style="color: #004E89;">Add Your Favorites to your Recipe Box</p>
+            }
+            @else if(recipeCount === 1){
             <p class="ps-4 mb-1 fst-italic" style="color: #004E89;">({{ recipeCount }} Recipe)</p>
-        }@else {
+            }@else {
             <p class="ps-4 mb-1 fst-italic" style="color: #004E89;">({{ recipeCount }} Recipes)</p>
-        }
-        <hr class="opacity-100 border-3 mb-0 mt-0 mx-4" style="border-color: #ff5733;">
+            }
+            <hr class="opacity-100 border-3 mb-0 mt-0 mx-4" style="border-color: #ff5733;">
         </div>
-        
-        <div class ="container-sm">
-            <ul class ="d-flex flex-wrap justify-content-center justify-content-lg-start ps-1 mt-1">
+
+        <div class="container-sm">
+            <ul class="d-flex flex-wrap justify-content-center justify-content-lg-start ps-1 mt-1">
                 @for(recipe of recipeList; track recipe._id){
                 <app-recipe [recipe]="recipe" [imagebaseurl]="recipeImageURL" />
                 }

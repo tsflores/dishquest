@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
-import { AuthService, User } from '../auth.service';
+import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
+import { User } from '../interfaces';
 
 @Component({
   selector: 'app-navigation',

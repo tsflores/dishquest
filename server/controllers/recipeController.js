@@ -89,54 +89,39 @@ class RecipeService {
 			});
 	}
 
-	//method to find recipes with query filter where favorite is set to true
-	// static favorite() {
-	// 	return Recipe.find({favorite: true})
-	// 		.then((recipes) => {
-	// 			if(!recipes) {
-	// 				throw new Error('No favorites found');
-	// 			}
-	// 			return recipes
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error('Error locating any recipes with favorite flag set to true');
-	// 			throw new Error(`Favorite recipe error: ${error.message}`);
-	// 		});
-	// }
-
 	// Updated method to get favorites for a specific user
-	static async getUserFavorites(userId) {
-		if (!userId) {
+	static async getUserFavorites(userID) {
+		if (!userID) {
 			throw new Error("User ID is required");
 		}
 		
 		try {
-			const favorites = await UserFavorite.find({ userId })
-				.populate('recipeId')
+			const favorites = await UserFavorite.find({ userID })
+				.populate('recipeID')
 				.sort({ createdAt: -1 });
 			
-			return favorites.map(fav => fav.recipeId);
+			return favorites.map(fav => fav.recipeID);
 		} catch (error) {
-			console.error(`Error getting favorites for user ${userId}:`, error);
+			console.error(`Error getting favorites for user ${userID}:`, error);
 			throw new Error(`Failed to retrieve user favorites: ${error.message}`);
 		}
 	}
 
 	// Method to add a recipe to user's favorites
-	static async addToFavorites(userId, recipeId) {
-		if (!userId || !recipeId) {
+	static async addToFavorites(userID, recipeID) {
+		if (!userID || !recipeID) {
 			throw new Error("User ID and Recipe ID are required");
 		}
 
 		try {
 			// Check if recipe exists
-			const recipe = await Recipe.findById(recipeId);
+			const recipe = await Recipe.findById(recipeID);
 			if (!recipe) {
-				throw new Error(`Recipe with id ${recipeId} not found`);
+				throw new Error(`Recipe with id ${recipeID} not found`);
 			}
 
 			// Add to favorites (will fail if already exists due to unique index)
-			const favorite = new UserFavorite({ userId, recipeId });
+			const favorite = new UserFavorite({ userID, recipeID });
 			await favorite.save();
 			
 			return favorite;
@@ -144,19 +129,19 @@ class RecipeService {
 			if (error.code === 11000) {
 				throw new Error("Recipe is already in favorites");
 			}
-			console.error(`Error adding recipe ${recipeId} to favorites for user ${userId}:`, error);
+			console.error(`Error adding recipe ${recipeID} to favorites for user ${userID}:`, error);
 			throw new Error(`Failed to add to favorites: ${error.message}`);
 		}
 	}
 
 	// Method to remove a recipe from user's favorites
-	static async removeFromFavorites(userId, recipeId) {
-		if (!userId || !recipeId) {
+	static async removeFromFavorites(userID, recipeID) {
+		if (!userID || !recipeID) {
 			throw new Error("User ID and Recipe ID are required");
 		}
 
 		try {
-			const result = await UserFavorite.deleteOne({ userId, recipeId });
+			const result = await UserFavorite.deleteOne({ userID, recipeID });
 			
 			if (result.deletedCount === 0) {
 				throw new Error("Recipe not found in favorites");
@@ -164,47 +149,47 @@ class RecipeService {
 			
 			return result;
 		} catch (error) {
-			console.error(`Error removing recipe ${recipeId} from favorites for user ${userId}:`, error);
+			console.error(`Error removing recipe ${recipeID} from favorites for user ${userID}:`, error);
 			throw new Error(`Failed to remove from favorites: ${error.message}`);
 		}
 	}
 
 	// Method to check if a recipe is favorited by a user
-	static async isFavorited(userId, recipeId) {
-		if (!userId || !recipeId) {
+	static async isFavorited(userID, recipeID) {
+		if (!userID || !recipeID) {
 			return false;
 		}
 
 		try {
-			const favorite = await UserFavorite.findOne({ userId, recipeId });
+			const favorite = await UserFavorite.findOne({ userID, recipeID });
 			return !!favorite;
 		} catch (error) {
-			console.error(`Error checking if recipe ${recipeId} is favorited by user ${userId}:`, error);
+			console.error(`Error checking if recipe ${recipeID} is favorited by user ${userID}:`, error);
 			return false;
 		}
 	}
 
 	// Method to get recipes with their favorite status for a user
-	static async listWithFavoriteStatus(userId) {
+	static async listWithFavoriteStatus(userID) {
 		try {
 			const recipes = await Recipe.find({});
 			
-			if (!userId) {
+			if (!userID) {
 				return recipes.map(recipe => ({
 					...recipe.toObject(),
 					isFavorited: false
 				}));
 			}
 
-			const userFavorites = await UserFavorite.find({ userId }).select('recipeId');
-			const favoriteIds = new Set(userFavorites.map(fav => fav.recipeId.toString()));
+			const userFavorites = await UserFavorite.find({ userID }).select('recipeId');
+			const favoriteIds = new Set(userFavorites.map(fav => fav.recipeID.toString()));
 
 			return recipes.map(recipe => ({
 				...recipe.toObject(),
 				isFavorited: favoriteIds.has(recipe._id.toString())
 			}));
 		} catch (error) {
-			console.error(`Error getting recipes with favorite status for user ${userId}:`, error);
+			console.error(`Error getting recipes with favorite status for user ${userID}:`, error);
 			throw new Error(`Failed to retrieve recipes: ${error.message}`);
 		}
 	}

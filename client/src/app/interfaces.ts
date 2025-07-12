@@ -16,3 +16,27 @@ export interface Recipe {
   updatedAt?: Date; 
   createdAt: Date | null;
 }
+
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  name: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user?: User;
+}
+
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+}
+
+export interface LoginRequest {
+  username: string; 
+  password: string;
+}

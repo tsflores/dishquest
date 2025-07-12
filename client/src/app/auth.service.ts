@@ -3,37 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  name: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  user?: User;
-}
-
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  username: string;
-  password: string;
-}
-
-export interface LoginRequest {
-  username: string; 
-  password: string;
-}
+import { User, AuthResponse, RegisterRequest, LoginRequest } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  //private baseUrl = 'http://localhost:3000/api/auth'; 
-  //private baseUrl = '/api/auth';
   private baseUrl = environment.authBaseURL;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
