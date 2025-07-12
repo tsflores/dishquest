@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-//create a new schema for our app
+//create a new schema for recipe metadata
 const schema = new Schema({
 	name: { type: String, required: true },
 	chef: { type: String, required: true },
@@ -12,7 +12,6 @@ const schema = new Schema({
 	cooktime: { type: String, required: true },
 	image: { type: String, required: true },
 	recipePDF: { type: String, required: true },
-	favorite: {type: Boolean, required: false},
 	createdAt: { type: Date },
 	updatedAt: { type: Date },
 });

@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
   apiurl:'/',
-  recipeImageURL: ''
+  recipeImageURL: '',
+  authBaseURL: '/api/auth'
 };

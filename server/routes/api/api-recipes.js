@@ -15,7 +15,7 @@ const upload = multer({
 
 router.use((req, res, next) => {
 	res.set({
-		// allow any domain, allow REST methods we've implemented
+		// allow any domain, allow REST methods that have been implemented
 		"Access-Control-Allow-Origin": "*",
 		"Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,OPTIONS",
 		"Access-Control-Allow-Headers":
@@ -71,15 +71,63 @@ router.get("/", (req, res, next) => {
 });
 
 //return any recipes in the collection that have favorite set to true
-router.get("/favorites", (req,res,next) => {
-	RecipeService.favorite()
-	.then((recipes) => {
-		res.status(200).json(recipes);
-	})
-	.catch((error) => {
-		console.error("Error retrieving favorite recipes:", error);
-		res.status(500).json({error: error.message || "Failed to retrieve favorite recipes"});
-	});
+// router.get("/favorites", (req,res,next) => {
+// 	RecipeService.favorite()
+// 	.then((recipes) => {
+// 		res.status(200).json(recipes);
+// 	})
+// 	.catch((error) => {
+// 		console.error("Error retrieving favorite recipes:", error);
+// 		res.status(500).json({error: error.message || "Failed to retrieve favorite recipes"});
+// 	});
+// });
+
+// Get user's favorite recipes
+router.get("/favorites/:userId", async (req, res, next) => {
+	try {
+		const userId = req.params.userId;
+		const favorites = await RecipeService.getUserFavorites(userId);
+		res.status(200).json(favorites);
+	} catch (error) {
+		console.error("Error retrieving user's favorite recipes:", error);
+		res.status(500).json({ error: error.message || "Failed to retrieve favorite recipes" });
+	}
+});
+
+// Add recipe to user's favorites
+router.post("/favorites/:userId/:recipeId", async (req, res, next) => {
+	try {
+		const { userId, recipeId } = req.params;
+		const favorite = await RecipeService.addToFavorites(userId, recipeId);
+		res.status(201).json(favorite);
+	} catch (error) {
+		console.error("Error adding recipe to favorites:", error);
+		res.status(400).json({ error: error.message });
+	}
+});
+
+// Remove recipe from user's favorites
+router.delete("/favorites/:userId/:recipeId", async (req, res, next) => {
+	try {
+		const { userId, recipeId } = req.params;
+		await RecipeService.removeFromFavorites(userId, recipeId);
+		res.status(204).send();
+	} catch (error) {
+		console.error("Error removing recipe from favorites:", error);
+		res.status(400).json({ error: error.message });
+	}
+});
+
+// Check if recipe is favorited by user
+router.get("/favorites/:userId/:recipeId/status", async (req, res, next) => {
+	try {
+		const { userId, recipeId } = req.params;
+		const isFavorited = await RecipeService.isFavorited(userId, recipeId);
+		res.status(200).json({ isFavorited });
+	} catch (error) {
+		console.error("Error checking favorite status:", error);
+		res.status(500).json({ error: error.message });
+	}
 });
 
 // find a specific document by id in the database
