@@ -1,7 +1,7 @@
 {
-  "name": "assignment-5-rest-api-tsflores",
+  "name": "DishQuest",
   "version": "1.0.0",
-  "description": "CSCI_E31 Assignment 5 Rest API",
+  "description": "Recipe Community",
   "main": "app.js",
   "scripts": {
     "start": "node ./bin/www",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HarvardDCENode/assignment-5-rest-api-tsflores.git"
+    "url": "git+https://github.com/tsflores/dishquest.git"
   },
   "author": "Trinidad Flores",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/HarvardDCENode/assignment-5-rest-api-tsflores/issues"
+    "url": "https://github.com/tsflores/dishquest/issues"
   },
-  "homepage": "https://github.com/HarvardDCENode/assignment-5-rest-api-tsflores#readme",
+  "homepage": "https://github.com/tsflores/dishquest#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "body-parser": "^1.20.3",
