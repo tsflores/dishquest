@@ -36,8 +36,10 @@ DishQuest is a full-stack web application designed to help users discover, explo
    ```env
    DB_USER = your_MongoDB_username
    DB_PWD  = your_MongoDB_password
+   JWT_SECRET = your_SECRET_string
    ```
-6. npm start to run server on localhost:3000
+6. Create an images and pdf folder to house public files, i.e. server/public/images and server/public/pdfs 
+7. npm start to run server on localhost:3000
 
 ## Technologies Used
 
