@@ -10,6 +10,17 @@ const authRoutes = require('./routes/auth/authenticate');
 
 const app = express();
 
+// Trust proxy for HTTPS behind reverse proxy
+app.set('trust proxy', 1);
+
+// Optional: Force HTTPS redirect
+app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https') {
+        return res.redirect(`https://${req.header('host')}${req.url}`);
+    }
+    next();
+});
+
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PWD}@clustere31.bxve7.mongodb.net/recipeApp?retryWrites=true&w=majority&appName=ClusterE31`, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=>{
   console.log('connected to database.');
