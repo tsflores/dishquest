@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>NourishPlan – UI Prototype</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --color-primary:        #2D6A4F;
+  --color-primary-light:  #E8F5EE;
+  --color-bg:             #FAF3E0;
+  --color-accent:         #E76F51;
+  --color-surface:        #FFFFFF;
+  --color-text:           #1A1A1A;
+  --color-text-muted:     #666666;
+  --color-border:         #E0E0E0;
+  --color-success:        #4CAF50;
+  --color-cat-produce:    #2D6A4F;
+  --color-cat-dairy:      #F4A261;
+  --color-cat-pantry:     #A0522D;
+  --color-cat-meat:       #C1121F;
+
+  --radius-card:   16px;
+  --radius-pill:   24px;
+  --shadow-card:   0 4px 12px rgba(0,0,0,0.06);
+  --shadow-nav:    0 -2px 10px rgba(0,0,0,0.08);
+
+  --font: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Spacing */
+  --sp-xs:  4px;
+  --sp-sm:  8px;
+  --sp-md:  16px;
+  --sp-lg:  24px;
+  --sp-xl:  32px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: #d0cfc8; font-family: var(--font); }
+
+/* ============================================================
+   DEVICE SHELL
+   ============================================================ */
+.device-shell {
+  width: 390px;
+  height: 844px;
+  background: var(--color-bg);
+  border-radius: 44px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35), 0 0 0 10px #1a1a1a, 0 0 0 12px #333;
+  margin: 32px auto;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Status bar */
+.status-bar {
+  height: 44px;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.status-bar .time { font-size: 15px; font-weight: 600; color: var(--color-text); }
+.status-bar .icons { display: flex; gap: 6px; align-items: center; }
+.status-bar .icons svg { width: 16px; height: 16px; fill: var(--color-text); }
+
+/* Dynamic island */
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 20;
+}
+
+/* Screen container */
+.screen-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  background: var(--color-bg);
+  overflow: hidden;
+}
+.screen.active { display: flex; }
+
+/* Scrollable content area */
+.screen-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+.screen-content::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   BOTTOM NAVIGATION
+   ============================================================ */
+.bottom-nav {
+  height: 72px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+  padding-bottom: 8px;
+  z-index: 100;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 12px;
+  transition: background 0.15s;
+  border: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-item:hover { background: var(--color-primary-light); }
+.nav-item svg { width: 22px; height: 22px; }
+.nav-item span { font-size: 10px; font-weight: 500; color: var(--color-text-muted); }
+.nav-item.active span { color: var(--color-primary); }
+.nav-item.active svg { color: var(--color-primary); }
+.nav-item svg { color: var(--color-text-muted); }
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.top-bar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-md);
+  flex-shrink: 0;
+  background: var(--color-bg);
+}
+.top-bar-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-primary);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.top-bar-left, .top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  z-index: 1;
+}
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn:hover { background: var(--color-primary-light); }
+.icon-btn svg { width: 20px; height: 20px; }
+
+/* ============================================================
+   SHARED COMPONENTS
+   ============================================================ */
+
+/* Pill / Chip */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.15s;
+}
+.pill-outline { border-color: var(--color-primary); color: var(--color-primary); background: transparent; }
+.pill-filled  { background: var(--color-primary); color: #fff; }
+.pill-muted   { background: #F0EDE5; color: var(--color-text-muted); border-color: #F0EDE5; }
+.pill-tag     { background: var(--color-primary-light); color: var(--color-primary); font-size: 11px; padding: 3px 10px; }
+.pill-accent  { background: var(--color-accent); color: #fff; }
+.pill-web     { background: var(--color-accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(0.97); opacity: 0.9; }
+.btn svg { width: 18px; height: 18px; }
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-accent  { background: var(--color-accent); color: #fff; }
+.btn-outline { background: transparent; color: var(--color-primary); border: 1.5px solid var(--color-primary); }
+.btn-full    { width: 100%; }
+
+/* Recipe Card – Vertical */
+.recipe-card-v {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.recipe-card-v:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+.recipe-card-v .card-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+}
+.recipe-card-v .card-img-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+.recipe-card-v .card-body { padding: 10px 12px 12px; }
+.recipe-card-v .card-title { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 6px; line-height: 1.3; }
+.recipe-card-v .card-meta { display: flex; align-items: center; justify-content: space-between; }
+.recipe-card-v .card-time { font-size: 12px; color: var(--color-text-muted); display: flex; align-items: center; gap: 4px; }
+.recipe-card-v .card-time svg { width: 13px; height: 13px; }
+
+/* Recipe Card – Horizontal */
+.recipe-card-h {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  gap: var(--sp-sm);
+  padding: var(--sp-sm);
+  cursor: pointer;
+  transition: transform 0.15s;
+  position: relative;
+}
+.recipe-card-h:hover { transform: translateY(-1px); }
+.recipe-card-h .card-img-wrap {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+.recipe-card-h .card-img-wrap .card-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.recipe-card-h .card-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
+.recipe-card-h .card-title { font-size: 15px; font-weight: 600; color: var(--color-text); line-height: 1.3; }
+.recipe-card-h .card-actions { display: flex; gap: 8px; }
+.card-action-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--color-primary-light);
+  color: var(--color-primary); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.card-action-btn:hover { background: var(--color-primary); color: #fff; }
+.card-action-btn svg { width: 16px; height: 16px; }
+.card-action-btn.add { background: var(--color-primary); color: #fff; }
+
+/* Stars */
+.stars { display: flex; gap: 2px; align-items: center; }
+.stars svg { width: 13px; height: 13px; fill: #F4A261; color: #F4A261; }
+.stars .star-empty { fill: #E0E0E0; color: #E0E0E0; }
+.stars .rating-text { font-size: 12px; color: var(--color-text-muted); margin-left: 4px; }
+
+/* Section header */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-md) var(--sp-md) var(--sp-sm);
+}
+.section-title { font-size: 17px; font-weight: 700; color: var(--color-text); display: flex; align-items: center; gap: 6px; }
+.section-title svg { width: 18px; height: 18px; color: var(--color-primary); }
+.section-link { font-size: 13px; color: var(--color-accent); font-weight: 500; cursor: pointer; }
+
+/* Horizontal scroll row */
+.h-scroll {
+  display: flex;
+  gap: var(--sp-sm);
+  overflow-x: auto;
+  padding: 0 var(--sp-md) var(--sp-md);
+  -webkit-overflow-scrolling: touch;
+}
+.h-scroll::-webkit-scrollbar { display: none; }
+
+/* Image placeholders with food emojis */
+.food-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.img-placeholder {
+  background: linear-gradient(135deg, #E8DFCE 0%, #D5C8A0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+}
+
+/* Divider */
+.divider { height: 1px; background: var(--color-border); margin: 0 var(--sp-md); }
+
+/* ============================================================
+   SCREEN 1 – DASHBOARD
+   ============================================================ */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px var(--sp-md) 0;
+}
+.app-logo { display: flex; align-items: center; gap: 8px; }
+.app-logo svg { width: 28px; height: 28px; color: var(--color-primary); }
+.app-logo-text { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.notif-btn { position: relative; }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
+  background: var(--color-accent); border-radius: 50%; border: 2px solid var(--color-bg);
+}
+
+.greeting-section { padding: var(--sp-md) var(--sp-md) var(--sp-sm); }
+.greeting-hi { font-size: 26px; font-weight: 700; color: var(--color-text); }
+.greeting-sub { font-size: 14px; color: var(--color-text-muted); margin-top: 2px; }
+
+/* Week plan mini-card */
+.week-card {
+  width: 130px;
+  flex-shrink: 0;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  cursor: pointer;
+}
+.week-card .wc-img { width: 100%; height: 80px; }
+.week-card .wc-img .img-placeholder { height: 80px; font-size: 1.6em; }
+.week-card .wc-body { padding: 8px 10px 10px; }
+.week-card .wc-name { font-size: 12px; font-weight: 600; color: var(--color-text); line-height: 1.3; }
+.week-card .wc-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.week-card .wc-day { font-size: 11px; color: var(--color-text-muted); }
+.week-card .wc-heart { color: var(--color-accent); }
+.week-card .wc-heart svg { width: 14px; height: 14px; }
+
+/* 2-col grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-sm); padding: 0 var(--sp-md) var(--sp-md); }
+
+/* Recently saved small thumb */
+.saved-thumb {
+  width: 100px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.saved-thumb .st-img { width: 100px; height: 80px; border-radius: 12px; overflow: hidden; }
+.saved-thumb .st-img .img-placeholder { height: 80px; font-size: 1.5em; }
+.saved-thumb .st-name { font-size: 11px; color: var(--color-text); font-weight: 500; margin-top: 5px; text-align: center; }
+
+/* ============================================================
+   SCREEN 2 – RECIPE SEARCH
+   ============================================================ */
+.search-bar-wrap {
+  padding: 8px var(--sp-md) 0;
+  position: relative;
+}
+.search-input-row {
+  background: var(--color-surface);
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 10px;
+  box-shadow: var(--shadow-card);
+}
+.search-input-row svg { width: 18px; height: 18px; color: var(--color-text-muted); flex-shrink: 0; }
+.search-input-row input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--color-text);
+  background: transparent;
+  font-family: var(--font);
+}
+.search-input-row input::placeholder { color: var(--color-text-muted); }
+
+.search-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px var(--sp-md) 0;
+}
+.search-toggle {
+  display: flex;
+  background: #F0EDE5;
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  gap: 2px;
+}
+.toggle-btn {
+  padding: 6px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+.toggle-btn.active { background: var(--color-primary); color: #fff; }
+.search-toggle-hint { font-size: 11px; color: var(--color-text-muted); display: flex; align-items: center; gap: 4px; }
+.search-toggle-hint svg { width: 13px; height: 13px; }
+
+.filter-chips-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px var(--sp-md) 4px;
+}
+.filter-chips-row::-webkit-scrollbar { display: none; }
+
+.sort-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px var(--sp-md);
+}
+.sort-label { font-size: 13px; color: var(--color-text-muted); }
+.sort-label strong { color: var(--color-primary); }
+.results-count { font-size: 13px; color: var(--color-text-muted); }
+
+.search-results { display: flex; flex-direction: column; gap: var(--sp-sm); padding: 0 var(--sp-md) var(--sp-md); }
+
+.web-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   SCREEN 3 – RECIPE DETAIL
+   ============================================================ */
+.detail-hero {
+  width: 100%;
+  height: 240px;
+  position: relative;
+  flex-shrink: 0;
+}
+.detail-hero .img-placeholder { height: 240px; font-size: 5em; border-radius: 0; }
+.detail-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 50%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px;
+}
+.detail-hero-actions { display: flex; gap: 8px; }
+.hero-icon-btn {
+  width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.9);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--color-text); transition: background 0.15s;
+}
+.hero-icon-btn.favorited { background: #fff; color: var(--color-accent); }
+.hero-icon-btn svg { width: 18px; height: 18px; }
+
+.detail-sheet {
+  flex: 1;
+  background: var(--color-surface);
+  border-radius: 24px 24px 0 0;
+  margin-top: -24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px var(--sp-md) var(--sp-md);
+}
+.detail-sheet::-webkit-scrollbar { display: none; }
+.detail-sheet-handle { width: 40px; height: 4px; background: var(--color-border); border-radius: 2px; margin: 0 auto 16px; }
+
+.detail-title { font-size: 22px; font-weight: 700; color: var(--color-text); margin-bottom: 12px; }
+
+.detail-stats { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.stat-chip {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--color-bg); border-radius: 10px;
+  padding: 6px 12px; font-size: 13px; color: var(--color-text);
+}
+.stat-chip svg { width: 15px; height: 15px; color: var(--color-primary); }
+
+.detail-rating-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+
+.detail-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+.detail-actions .btn { flex: 1; font-size: 13px; padding: 11px 12px; }
+
+.detail-tabs { display: flex; border-bottom: 1.5px solid var(--color-border); margin-bottom: 16px; }
+.detail-tab {
+  flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 500;
+  color: var(--color-text-muted); cursor: pointer; border-bottom: 2.5px solid transparent;
+  margin-bottom: -1.5px; transition: all 0.15s;
+}
+.detail-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 600; }
+
+.detail-desc { font-size: 14px; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 16px; }
+
+.nutrition-card {
+  background: var(--color-bg);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.nutrition-title { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 10px; }
+.nutrition-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.nutrition-item { text-align: center; }
+.nutrition-item .n-value { font-size: 16px; font-weight: 700; color: var(--color-primary); }
+.nutrition-item .n-label { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; }
+
+.tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+
+.source-row { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.source-row svg { width: 15px; height: 15px; color: var(--color-text-muted); }
+.source-link { color: var(--color-primary); text-decoration: underline; cursor: pointer; }
+
+/* ============================================================
+   SCREEN 4 – MEAL PLANNER
+   ============================================================ */
+.planner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px var(--sp-md) 0;
+}
+.planner-title { font-size: 20px; font-weight: 700; color: var(--color-primary); }
+.planner-nav { display: flex; align-items: center; gap: 8px; }
+.planner-nav-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--color-border);
+  background: var(--color-surface); cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: var(--color-text); transition: all 0.15s;
+}
+.planner-nav-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.planner-nav-btn svg { width: 16px; height: 16px; }
+
+.week-strip {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px var(--sp-md) 8px;
+}
+.day-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 12px;
+  transition: background 0.15s;
+}
+.day-col:hover { background: var(--color-primary-light); }
+.day-col .day-abbr { font-size: 11px; color: var(--color-text-muted); font-weight: 500; }
+.day-col .day-num {
+  width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 14px; font-weight: 600; color: var(--color-text);
+  transition: all 0.15s;
+}
+.day-col.active .day-num { background: var(--color-primary); color: #fff; }
+.day-col .day-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-primary); }
+.day-col .day-dot.empty { background: transparent; }
+
+.planner-day-header { padding: 4px var(--sp-md) var(--sp-sm); font-size: 16px; font-weight: 700; color: var(--color-text); }
+
+.meal-slot-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  margin: 0 var(--sp-md) var(--sp-sm);
+  padding: var(--sp-sm);
+  display: flex;
+  gap: var(--sp-sm);
+  align-items: center;
+}
+.meal-slot-img { width: 72px; height: 72px; border-radius: 12px; overflow: hidden; flex-shrink: 0; }
+.meal-slot-img .img-placeholder { height: 72px; font-size: 1.5em; }
+.meal-slot-body { flex: 1; }
+.meal-type-label { font-size: 10px; font-weight: 700; color: var(--color-primary); letter-spacing: 0.8px; margin-bottom: 3px; }
+.meal-slot-name { font-size: 14px; font-weight: 600; color: var(--color-text); }
+.meal-slot-meta { font-size: 12px; color: var(--color-text-muted); display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+.meal-slot-meta svg { width: 12px; height: 12px; }
+.meal-slot-actions { display: flex; flex-direction: column; gap: 6px; }
+.meal-slot-action-btn {
+  width: 28px; height: 28px; border-radius: 8px; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+}
+.meal-slot-action-btn.edit { background: var(--color-primary-light); color: var(--color-primary); }
+.meal-slot-action-btn.delete { background: #FEE8E8; color: var(--color-accent); }
+.meal-slot-action-btn svg { width: 14px; height: 14px; }
+.planned-badge { display: flex; align-items: center; gap: 3px; font-size: 11px; color: var(--color-success); margin-top: 3px; }
+.planned-badge svg { width: 13px; height: 13px; }
+
+.add-snack-btn {
+  margin: 0 var(--sp-md) var(--sp-sm);
+  border: 1.5px dashed var(--color-primary);
+  border-radius: var(--radius-card);
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary);
+  cursor: pointer;
+  background: transparent;
+  width: calc(100% - 32px);
+  font-family: var(--font);
+  transition: background 0.15s;
+}
+.add-snack-btn:hover { background: var(--color-primary-light); }
+
+.weekly-summary {
+  margin: var(--sp-sm) var(--sp-md) var(--sp-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-md);
+}
+.ws-title { font-size: 15px; font-weight: 700; color: var(--color-text); margin-bottom: 10px; }
+.ws-cal-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--color-text-muted); margin-bottom: 6px; }
+.ws-cal-row strong { color: var(--color-text); }
+.progress-bar-wrap { height: 8px; background: #F0EDE5; border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+.progress-bar-fill { height: 100%; background: var(--color-primary); border-radius: 4px; }
+.macro-row { display: flex; justify-content: space-around; }
+.macro-item { text-align: center; }
+.macro-item .m-val { font-size: 16px; font-weight: 700; color: var(--color-primary); }
+.macro-item .m-label { font-size: 11px; color: var(--color-text-muted); }
+
+.fab {
+  position: absolute;
+  bottom: 80px;
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(45,106,79,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  z-index: 50;
+}
+.fab:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(45,106,79,0.5); }
+.fab svg { width: 24px; height: 24px; }
+
+/* ============================================================
+   SCREEN 5 – GROCERY LIST
+   ============================================================ */
+.grocery-context-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px var(--sp-md) 8px;
+}
+.grocery-source-text { font-size: 12px; color: var(--color-text-muted); flex: 1; }
+.regen-btn {
+  display: flex; align-items: center; gap: 4px; padding: 4px 10px;
+  border-radius: var(--radius-pill); border: 1.5px solid var(--color-primary);
+  background: transparent; color: var(--color-primary); font-size: 12px; font-weight: 500;
+  cursor: pointer; font-family: var(--font);
+}
+.regen-btn svg { width: 13px; height: 13px; }
+
+.grocery-progress { padding: 0 var(--sp-md) var(--sp-md); }
+.gp-label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 5px; }
+
+.grocery-category { margin-bottom: 4px; }
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px var(--sp-md) 6px;
+}
+.category-border { width: 4px; height: 18px; border-radius: 2px; flex-shrink: 0; }
+.category-name { font-size: 12px; font-weight: 700; color: var(--color-text); letter-spacing: 0.8px; }
+
+.grocery-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px var(--sp-md);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.grocery-item:hover { background: #F9F6EE; }
+.grocery-item:last-child { border-bottom: none; }
+.grocery-checkbox {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--color-border);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.grocery-checkbox.checked { background: var(--color-success); border-color: var(--color-success); }
+.grocery-checkbox svg { width: 13px; height: 13px; color: #fff; }
+.grocery-item-name { flex: 1; font-size: 14px; color: var(--color-text); }
+.grocery-item-name.done { text-decoration: line-through; color: var(--color-text-muted); }
+.grocery-item-qty { font-size: 13px; color: var(--color-primary); font-weight: 500; }
+
+.grocery-sticky-bar {
+  padding: 10px var(--sp-md);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.grocery-sticky-bar .btn { flex: 1; font-size: 13px; padding: 11px 12px; }
+
+/* ============================================================
+   SCREEN 6 – MY COLLECTIONS
+   ============================================================ */
+.collection-filter-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px var(--sp-md) 4px;
+}
+.collection-filter-row::-webkit-scrollbar { display: none; }
+
+.collection-count { padding: 4px var(--sp-md) 8px; font-size: 13px; color: var(--color-text-muted); }
+
+.collection-group { margin-bottom: 8px; }
+.collection-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px var(--sp-md) 6px;
+  cursor: pointer;
+}
+.collection-group-header .cg-icon { font-size: 18px; }
+.collection-group-header .cg-title { font-size: 14px; font-weight: 700; color: var(--color-text); letter-spacing: 0.5px; }
+.collection-group-header .cg-count { font-size: 12px; color: var(--color-text-muted); }
+.collection-group-header .cg-arrow { margin-left: auto; color: var(--color-text-muted); }
+.collection-group-header .cg-arrow svg { width: 16px; height: 16px; }
+
+.collection-card {
+  width: 140px;
+  flex-shrink: 0;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+.collection-card .cc-img { width: 100%; height: 100px; }
+.collection-card .cc-img .img-placeholder { height: 100px; font-size: 2em; }
+.collection-card .cc-body { padding: 8px 10px 10px; }
+.collection-card .cc-title { font-size: 13px; font-weight: 600; color: var(--color-text); line-height: 1.3; }
+.collection-card .cc-meta { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+.collection-card .cc-time { font-size: 11px; color: var(--color-text-muted); display: flex; align-items: center; gap: 3px; }
+.collection-card .cc-time svg { width: 11px; height: 11px; }
+.collection-card .cc-menu {
+  position: absolute; top: 6px; right: 6px; width: 26px; height: 26px;
+  border-radius: 50%; background: rgba(255,255,255,0.9); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: var(--color-text);
+}
+.collection-card .cc-menu svg { width: 14px; height: 14px; }
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.mt-sm { margin-top: var(--sp-sm); }
+.mt-md { margin-top: var(--sp-md); }
+.px-md { padding-left: var(--sp-md); padding-right: var(--sp-md); }
+.text-muted { color: var(--color-text-muted); font-size: 13px; }
+.flex-center { display: flex; align-items: center; }
+.gap-sm { gap: var(--sp-sm); }
+
+/* ============================================================
+   PAGE WRAPPER (for full-page view outside device shell)
+   ============================================================ */
+.page-label {
+  text-align: center;
+  color: #888;
+  font-family: var(--font);
+  font-size: 13px;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<p class="page-label">NourishPlan — Interactive UI Prototype &nbsp;|&nbsp; Use bottom navigation to switch screens</p>
+
+<div class="device-shell">
+
+  <!-- Dynamic Island -->
+  <div class="dynamic-island"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons">
+      <!-- Signal -->
+      <svg viewBox="0 0 24 24"><rect x="1" y="14" width="3" height="7" rx="1"/><rect x="6" y="10" width="3" height="11" rx="1"/><rect x="11" y="6" width="3" height="15" rx="1"/><rect x="16" y="2" width="3" height="19" rx="1" opacity="0.3"/></svg>
+      <!-- WiFi -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+      <!-- Battery -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M20 11h2v3h-2z"/><rect x="4" y="9" width="14" height="7" rx="1" fill="currentColor" stroke="none"/></svg>
+    </div>
+  </div>
+
+  <!-- Screen Wrap -->
+  <div class="screen-wrap">
+
+    <!-- ======================================================
+         SCREEN 1: DASHBOARD
+         ====================================================== -->
+    <div class="screen active" id="screen-home">
+      <div class="screen-content">
+
+        <!-- Header -->
+        <div class="dashboard-header" style="padding-top:12px;">
+          <div class="app-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2C8 2 4 6 4 10c0 4 3 7 8 10 5-3 8-6 8-10 0-4-4-8-8-8z"/>
+              <path d="M12 6v8M9 9l3-3 3 3"/>
+            </svg>
+            <span class="app-logo-text">NourishPlan</span>
+          </div>
+          <div class="header-actions">
+            <button class="icon-btn notif-btn">
+              <div class="notif-dot"></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+            </button>
+            <div class="avatar">A</div>
+          </div>
+        </div>
+
+        <!-- Greeting -->
+        <div class="greeting-section">
+          <div class="greeting-hi">Good morning, Alex! 👋</div>
+          <div class="greeting-sub">What are you cooking this week?</div>
+        </div>
+
+        <!-- This Week's Plan -->
+        <div class="section-header">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            This Week's Plan
+          </div>
+        </div>
+        <div class="h-scroll">
+          <div class="week-card" onclick="goToScreen('screen-detail')">
+            <div class="wc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#f6d365,#fda085)">🍝</div></div>
+            <div class="wc-body">
+              <div class="wc-name">Lemon Herb Pasta</div>
+              <div class="wc-footer">
+                <span class="wc-day">Mon</span>
+                <span class="wc-heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+              </div>
+            </div>
+          </div>
+          <div class="week-card" onclick="goToScreen('screen-detail')">
+            <div class="wc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#a8edea,#fed6e3)">🐟</div></div>
+            <div class="wc-body">
+              <div class="wc-name">Grilled Salmon</div>
+              <div class="wc-footer">
+                <span class="wc-day">Tue</span>
+                <span class="wc-heart" style="color:#ccc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+              </div>
+            </div>
+          </div>
+          <div class="week-card" onclick="goToScreen('screen-detail')">
+            <div class="wc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#d4fc79,#96e6a1)">🥦</div></div>
+            <div class="wc-body">
+              <div class="wc-name">Thai Basil Stir-Fry</div>
+              <div class="wc-footer">
+                <span class="wc-day">Wed</span>
+                <span class="wc-heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+              </div>
+            </div>
+          </div>
+          <div class="week-card" onclick="goToScreen('screen-detail')">
+            <div class="wc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#fccb90,#d57eeb)">🌮</div></div>
+            <div class="wc-body">
+              <div class="wc-name">Beef Tacos</div>
+              <div class="wc-footer">
+                <span class="wc-day">Thu</span>
+                <span class="wc-heart" style="color:#ccc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommended For You -->
+        <div class="section-header">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" opacity="0.3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#2D6A4F"/></svg>
+            Recommended For You
+          </div>
+          <span class="section-link" onclick="goToScreen('screen-search')">See All ›</span>
+        </div>
+        <div class="grid-2">
+          <div class="recipe-card-v" onclick="goToScreen('screen-detail')">
+            <div class="card-img-placeholder img-placeholder" style="background:linear-gradient(135deg,#ff9a9e,#fecfef)">🍝</div>
+            <div class="card-body">
+              <div class="card-title">Creamy Tomato Pasta</div>
+              <span class="pill pill-tag">Italian</span>
+              <div class="card-meta" style="margin-top:6px;">
+                <div class="card-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>25 min</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" width="16" height="16"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="recipe-card-v" onclick="goToScreen('screen-detail')">
+            <div class="card-img-placeholder img-placeholder" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">🍜</div>
+            <div class="card-body">
+              <div class="card-title">Prawn Pad Thai</div>
+              <span class="pill pill-tag">Asian</span>
+              <div class="card-meta" style="margin-top:6px;">
+                <div class="card-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>30 min</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" width="16" height="16"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="recipe-card-v" onclick="goToScreen('screen-detail')">
+            <div class="card-img-placeholder img-placeholder" style="background:linear-gradient(135deg,#84fab0,#8fd3f4)">🥗</div>
+            <div class="card-body">
+              <div class="card-title">Buddha Bowl</div>
+              <span class="pill pill-tag">Vegetarian</span>
+              <div class="card-meta" style="margin-top:6px;">
+                <div class="card-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>20 min</div>
+                <svg viewBox="0 0 24 24" fill="#E76F51" stroke="#E76F51" stroke-width="2" width="16" height="16"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="recipe-card-v" onclick="goToScreen('screen-detail')">
+            <div class="card-img-placeholder img-placeholder" style="background:linear-gradient(135deg,#f093fb,#f5576c)">🍛</div>
+            <div class="card-body">
+              <div class="card-title">Chicken Tikka Masala</div>
+              <span class="pill pill-tag">Indian</span>
+              <div class="card-meta" style="margin-top:6px;">
+                <div class="card-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>45 min</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" width="16" height="16"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recently Saved -->
+        <div class="section-header">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--color-primary)"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+            Recently Saved
+          </div>
+          <span class="section-link" onclick="goToScreen('screen-collections')">See All ›</span>
+        </div>
+        <div class="h-scroll">
+          <div class="saved-thumb" onclick="goToScreen('screen-detail')">
+            <div class="st-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#d4fc79,#96e6a1)">🥑</div></div>
+            <div class="st-name">Avocado Toast</div>
+          </div>
+          <div class="saved-thumb" onclick="goToScreen('screen-detail')">
+            <div class="st-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#fccb90,#d57eeb)">🍛</div></div>
+            <div class="st-name">Coconut Curry</div>
+          </div>
+          <div class="saved-thumb" onclick="goToScreen('screen-detail')">
+            <div class="st-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">🥤</div></div>
+            <div class="st-name">Protein Smoothie</div>
+          </div>
+          <div class="saved-thumb" onclick="goToScreen('screen-detail')">
+            <div class="st-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#ff9a9e,#fecfef)">🍳</div></div>
+            <div class="st-name">Shakshuka</div>
+          </div>
+        </div>
+
+      </div><!-- /screen-content -->
+    </div><!-- /screen-home -->
+
+    <!-- ======================================================
+         SCREEN 2: RECIPE SEARCH
+         ====================================================== -->
+    <div class="screen" id="screen-search">
+      <div class="top-bar" style="position:relative;">
+        <div class="top-bar-left">
+          <button class="icon-btn" onclick="goToScreen('screen-home')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+        </div>
+        <span class="top-bar-title">Search Recipes</span>
+        <div class="top-bar-right">
+          <button class="icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/><circle cx="4" cy="12" r="2" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <!-- Search Bar -->
+        <div class="search-bar-wrap">
+          <div class="search-input-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search recipes, ingredients..." value="mushroom">
+            <span class="pill pill-accent" style="font-size:11px;padding:3px 10px;">Web</span>
+          </div>
+        </div>
+
+        <!-- Toggle -->
+        <div class="search-toggle-row">
+          <div class="search-toggle">
+            <button class="toggle-btn active" id="toggle-inapp" onclick="setToggle('inapp')">In-App</button>
+            <button class="toggle-btn" id="toggle-web" onclick="setToggle('web')">Web Search</button>
+          </div>
+          <div class="search-toggle-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Finds recipes from the internet
+          </div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips-row">
+          <span class="pill pill-filled" onclick="setFilter(this)">All</span>
+          <span class="pill pill-muted" onclick="setFilter(this)">Breakfast</span>
+          <span class="pill pill-muted" onclick="setFilter(this)">Lunch</span>
+          <span class="pill pill-muted" onclick="setFilter(this)">Dinner</span>
+          <span class="pill pill-muted" onclick="setFilter(this)">Vegetarian</span>
+          <span class="pill pill-muted" onclick="setFilter(this)">Quick (&lt;30 min)</span>
+          <span class="pill pill-muted" onclick="setFilter(this)">Vegan</span>
+        </div>
+
+        <!-- Sort Row -->
+        <div class="sort-row">
+          <span class="sort-label">Sort by: <strong>Relevance ▾</strong></span>
+          <span class="results-count">24 results</span>
+        </div>
+
+        <!-- Results -->
+        <div class="search-results">
+
+          <!-- Result 1 -->
+          <div class="recipe-card-h" onclick="goToScreen('screen-detail')">
+            <div class="card-img-wrap">
+              <div class="img-placeholder" style="background:linear-gradient(135deg,#e0c3fc,#8ec5fc);height:100%">🍄</div>
+            </div>
+            <div class="card-body">
+              <div>
+                <div class="card-title">Mushroom Risotto</div>
+                <span class="pill pill-tag" style="margin-top:4px;display:inline-flex;">Italian</span>
+                <div class="stars" style="margin-top:5px;">
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="star-empty"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <span class="rating-text">4.5 (128)</span>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:5px;font-size:12px;color:var(--color-text-muted);">
+                  <span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>35 min</span>
+                  <span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>420 kcal</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="card-action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="card-action-btn add">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Result 2 (WEB) -->
+          <div class="recipe-card-h" onclick="goToScreen('screen-detail')">
+            <div class="card-img-wrap">
+              <div class="img-placeholder" style="background:linear-gradient(135deg,#f093fb,#f5576c);height:100%">🍛</div>
+              <div class="web-badge">WEB</div>
+            </div>
+            <div class="card-body">
+              <div>
+                <div class="card-title">Chicken Tikka Masala</div>
+                <span class="pill pill-tag" style="margin-top:4px;display:inline-flex;">Indian</span>
+                <div class="stars" style="margin-top:5px;">
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <span class="rating-text">4.9 (342)</span>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:5px;font-size:12px;color:var(--color-text-muted);">
+                  <span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>45 min</span>
+                  <span>550 kcal</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="card-action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="card-action-btn add">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Result 3 -->
+          <div class="recipe-card-h" onclick="goToScreen('screen-detail')">
+            <div class="card-img-wrap">
+              <div class="img-placeholder" style="background:linear-gradient(135deg,#84fab0,#8fd3f4);height:100%">🥗</div>
+            </div>
+            <div class="card-body">
+              <div>
+                <div class="card-title">Avocado Buddha Bowl</div>
+                <span class="pill pill-tag" style="margin-top:4px;display:inline-flex;">Vegetarian</span>
+                <div class="stars" style="margin-top:5px;">
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="star-empty"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <span class="rating-text">4.3 (186)</span>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:5px;font-size:12px;color:var(--color-text-muted);">
+                  <span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>20 min</span>
+                  <span>380 kcal</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="card-action-btn" style="background:var(--color-primary);color:#fff;">
+                  <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="card-action-btn add">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Result 4 (WEB) -->
+          <div class="recipe-card-h" onclick="goToScreen('screen-detail')">
+            <div class="card-img-wrap">
+              <div class="img-placeholder" style="background:linear-gradient(135deg,#fccb90,#d57eeb);height:100%">🍜</div>
+              <div class="web-badge">WEB</div>
+            </div>
+            <div class="card-body">
+              <div>
+                <div class="card-title">Beef Pho Noodle Soup</div>
+                <span class="pill pill-tag" style="margin-top:4px;display:inline-flex;">Vietnamese</span>
+                <div class="stars" style="margin-top:5px;">
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="star-empty"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <span class="rating-text">4.6 (94)</span>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:5px;font-size:12px;color:var(--color-text-muted);">
+                  <span style="display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>60 min</span>
+                  <span>480 kcal</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="card-action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="card-action-btn add">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /search-results -->
+      </div><!-- /screen-content -->
+    </div><!-- /screen-search -->
+
+    <!-- ======================================================
+         SCREEN 3: RECIPE DETAIL
+         ====================================================== -->
+    <div class="screen" id="screen-detail">
+      <!-- Hero Image -->
+      <div class="detail-hero" style="flex-shrink:0;">
+        <div class="img-placeholder" style="background:linear-gradient(135deg,#e0c3fc,#8ec5fc);height:240px;font-size:5em;border-radius:0;">🍄</div>
+        <div class="detail-hero-overlay">
+          <button class="hero-icon-btn" onclick="history.back(); goToScreen('screen-search')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="detail-hero-actions">
+            <button class="hero-icon-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+            <button class="hero-icon-btn favorited" id="fav-btn" onclick="toggleFav()">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Sheet -->
+      <div class="detail-sheet">
+        <div class="detail-sheet-handle"></div>
+
+        <div class="detail-title">Mushroom Risotto</div>
+
+        <!-- Stats -->
+        <div class="detail-stats">
+          <div class="stat-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            35 min
+          </div>
+          <div class="stat-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            420 kcal
+          </div>
+          <div class="stat-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Serves 4
+          </div>
+        </div>
+
+        <!-- Rating Row -->
+        <div class="detail-rating-row">
+          <div class="stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" class="star-empty"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span class="rating-text">4.5 (128 reviews)</span>
+          </div>
+          <span class="pill pill-tag">Italian</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="detail-actions">
+          <button class="btn btn-primary" onclick="goToScreen('screen-planner')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Add to Meal Plan
+          </button>
+          <button class="btn btn-outline" onclick="goToScreen('screen-collections')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            Save
+          </button>
+        </div>
+        <button class="btn btn-accent btn-full" style="margin-bottom:16px;" onclick="goToScreen('screen-grocery')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          Generate Grocery List
+        </button>
+
+        <!-- Tabs -->
+        <div class="detail-tabs">
+          <div class="detail-tab active" onclick="setDetailTab(this,'tab-overview')">Overview</div>
+          <div class="detail-tab" onclick="setDetailTab(this,'tab-ingredients')">Ingredients</div>
+          <div class="detail-tab" onclick="setDetailTab(this,'tab-instructions')">Instructions</div>
+        </div>
+
+        <!-- Tab: Overview -->
+        <div id="tab-overview">
+          <p class="detail-desc">A classic Italian comfort dish made with arborio rice, wild mushrooms, parmesan, and a rich vegetable broth. Creamy, earthy, and deeply satisfying — perfect for a cozy weeknight dinner.</p>
+
+          <div class="nutrition-card">
+            <div class="nutrition-title">Nutrition Facts</div>
+            <div class="nutrition-grid">
+              <div class="nutrition-item"><div class="n-value">12g</div><div class="n-label">Protein</div></div>
+              <div class="nutrition-item"><div class="n-value">58g</div><div class="n-label">Carbs</div></div>
+              <div class="nutrition-item"><div class="n-value">14g</div><div class="n-label">Fat</div></div>
+              <div class="nutrition-item"><div class="n-value">3g</div><div class="n-label">Fiber</div></div>
+            </div>
+          </div>
+
+          <div style="padding:0 0 8px;">
+            <div style="font-size:14px;font-weight:600;color:var(--color-text);margin-bottom:8px;">Tags</div>
+            <div class="tags-row">
+              <span class="pill pill-muted">#Vegetarian</span>
+              <span class="pill pill-muted">#Italian</span>
+              <span class="pill pill-muted">#Comfort Food</span>
+              <span class="pill pill-muted">#Rice Dishes</span>
+            </div>
+          </div>
+
+          <div class="source-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span style="color:var(--color-text-muted);font-size:13px;">Source:</span>
+            <span class="source-link">AllRecipes.com</span>
+          </div>
+        </div>
+
+        <!-- Tab: Ingredients (hidden) -->
+        <div id="tab-ingredients" style="display:none;">
+          <div style="font-size:13px;color:var(--color-text-muted);margin-bottom:12px;">Serves 4 people</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--color-border);font-size:14px;"><span>Arborio Rice</span><span style="color:var(--color-primary);font-weight:500;">1.5 cups</span></div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--color-border);font-size:14px;"><span>Wild Mushrooms</span><span style="color:var(--color-primary);font-weight:500;">300g</span></div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--color-border);font-size:14px;"><span>Vegetable Broth</span><span style="color:var(--color-primary);font-weight:500;">4 cups</span></div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--color-border);font-size:14px;"><span>Parmesan Cheese</span><span style="color:var(--color-primary);font-weight:500;">100g</span></div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--color-border);font-size:14px;"><span>Unsalted Butter</span><span style="color:var(--color-primary);font-weight:500;">50g</span></div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--color-border);font-size:14px;"><span>White Wine</span><span style="color:var(--color-primary);font-weight:500;">½ cup</span></div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--color-border);font-size:14px;"><span>Shallots</span><span style="color:var(--color-primary);font-weight:500;">2 medium</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;"><span>Fresh Thyme</span><span style="color:var(--color-primary);font-weight:500;">1 bunch</span></div>
+          </div>
+        </div>
+
+        <!-- Tab: Instructions (hidden) -->
+        <div id="tab-instructions" style="display:none;">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">1</div>
+              <p style="font-size:14px;color:var(--color-text);line-height:1.6;">Heat the vegetable broth in a saucepan over medium heat. Keep warm throughout cooking.</p>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">2</div>
+              <p style="font-size:14px;color:var(--color-text);line-height:1.6;">In a large pan, melt butter over medium heat. Sauté shallots until translucent, about 3 minutes.</p>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">3</div>
+              <p style="font-size:14px;color:var(--color-text);line-height:1.6;">Add mushrooms and cook until golden, about 5 minutes. Set aside half for garnish.</p>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">4</div>
+              <p style="font-size:14px;color:var(--color-text);line-height:1.6;">Add arborio rice and toast for 2 minutes. Pour in white wine and stir until absorbed.</p>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--color-border);color:var(--color-text-muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">5</div>
+              <p style="font-size:14px;color:var(--color-text-muted);line-height:1.6;">Add warm broth one ladle at a time, stirring constantly until each addition is absorbed. Continue for 18–20 minutes until rice is al dente.</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /detail-sheet -->
+    </div><!-- /screen-detail -->
+
+
+    <!-- ======================================================
+         SCREEN 4: MEAL PLANNER
+         ====================================================== -->
+    <div class="screen" id="screen-planner">
+      <div class="top-bar" style="position:relative;">
+        <div class="top-bar-left">
+          <button class="planner-nav-btn" onclick="">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+        </div>
+        <span class="top-bar-title">Meal Planner</span>
+        <div class="top-bar-right">
+          <button class="planner-nav-btn" onclick="">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <span class="pill pill-outline" style="font-size:12px;padding:4px 12px;">Today</span>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <!-- Week Strip -->
+        <div class="week-strip">
+          <div class="day-col" onclick="selectDay(this)">
+            <span class="day-abbr">MON</span>
+            <div class="day-num">9</div>
+            <div class="day-dot"></div>
+          </div>
+          <div class="day-col" onclick="selectDay(this)">
+            <span class="day-abbr">TUE</span>
+            <div class="day-num">10</div>
+            <div class="day-dot"></div>
+          </div>
+          <div class="day-col active" onclick="selectDay(this)">
+            <span class="day-abbr">WED</span>
+            <div class="day-num">11</div>
+            <div class="day-dot"></div>
+          </div>
+          <div class="day-col" onclick="selectDay(this)">
+            <span class="day-abbr">THU</span>
+            <div class="day-num">12</div>
+            <div class="day-dot"></div>
+          </div>
+          <div class="day-col" onclick="selectDay(this)">
+            <span class="day-abbr">FRI</span>
+            <div class="day-num">13</div>
+            <div class="day-dot"></div>
+          </div>
+          <div class="day-col" onclick="selectDay(this)">
+            <span class="day-abbr">SAT</span>
+            <div class="day-num">14</div>
+            <div class="day-dot empty"></div>
+          </div>
+          <div class="day-col" onclick="selectDay(this)">
+            <span class="day-abbr">SUN</span>
+            <div class="day-num">15</div>
+            <div class="day-dot empty"></div>
+          </div>
+        </div>
+
+        <div class="planner-day-header">Wednesday, June 11</div>
+
+        <!-- Breakfast -->
+        <div class="meal-slot-card">
+          <div class="meal-slot-img">
+            <div class="img-placeholder" style="background:linear-gradient(135deg,#d4fc79,#96e6a1);height:72px;">🥑</div>
+          </div>
+          <div class="meal-slot-body">
+            <div class="meal-type-label">BREAKFAST</div>
+            <div class="meal-slot-name">Avocado Toast</div>
+            <div class="meal-slot-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              10 min
+            </div>
+            <div class="planned-badge">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              Planned
+            </div>
+          </div>
+          <div class="meal-slot-actions">
+            <button class="meal-slot-action-btn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="meal-slot-action-btn delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Lunch -->
+        <div class="meal-slot-card">
+          <div class="meal-slot-img">
+            <div class="img-placeholder" style="background:linear-gradient(135deg,#84fab0,#8fd3f4);height:72px;">🥗</div>
+          </div>
+          <div class="meal-slot-body">
+            <div class="meal-type-label">LUNCH</div>
+            <div class="meal-slot-name">Caesar Salad</div>
+            <div class="meal-slot-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              15 min
+            </div>
+          </div>
+          <div class="meal-slot-actions">
+            <button class="meal-slot-action-btn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="meal-slot-action-btn delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Dinner -->
+        <div class="meal-slot-card">
+          <div class="meal-slot-img">
+            <div class="img-placeholder" style="background:linear-gradient(135deg,#e0c3fc,#8ec5fc);height:72px;">🍄</div>
+          </div>
+          <div class="meal-slot-body">
+            <div class="meal-type-label">DINNER</div>
+            <div class="meal-slot-name">Mushroom Risotto</div>
+            <div class="meal-slot-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              35 min
+            </div>
+          </div>
+          <div class="meal-slot-actions">
+            <button class="meal-slot-action-btn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="meal-slot-action-btn delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Add Snack -->
+        <button class="add-snack-btn">+ Add Snack</button>
+
+        <!-- Weekly Summary -->
+        <div class="weekly-summary">
+          <div class="ws-title">Weekly Summary</div>
+          <div class="ws-cal-row">
+            <span><strong>1,840</strong> / 2,000 kcal</span>
+            <span>92%</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" style="width:92%;"></div>
+          </div>
+          <div class="macro-row">
+            <div class="macro-item"><div class="m-val">68g</div><div class="m-label">Protein</div></div>
+            <div class="macro-item"><div class="m-val">210g</div><div class="m-label">Carbs</div></div>
+            <div class="macro-item"><div class="m-val">52g</div><div class="m-label">Fat</div></div>
+          </div>
+        </div>
+
+      </div><!-- /screen-content -->
+
+      <!-- FAB -->
+      <button class="fab" title="Add Meal" onclick="goToScreen('screen-search')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div><!-- /screen-planner -->
+
+    <!-- ======================================================
+         SCREEN 5: GROCERY LIST
+         ====================================================== -->
+    <div class="screen" id="screen-grocery">
+      <div class="top-bar" style="position:relative;">
+        <div class="top-bar-left">
+          <button class="icon-btn" onclick="goToScreen('screen-detail')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+        </div>
+        <span class="top-bar-title">Grocery List</span>
+        <div class="top-bar-right">
+          <button class="icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <button style="border:none;background:none;font-size:13px;color:var(--color-accent);font-weight:500;cursor:pointer;font-family:var(--font);">Clear All</button>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <!-- Context Bar -->
+        <div class="grocery-context-bar">
+          <span class="grocery-source-text">Generated from: <strong>Mushroom Risotto</strong> + 2 more meals</span>
+          <button class="regen-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Regenerate
+          </button>
+        </div>
+
+        <!-- Progress -->
+        <div class="grocery-progress">
+          <div class="gp-label">Items checked: <strong>5 / 14</strong></div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" style="width:36%;"></div>
+          </div>
+        </div>
+
+        <!-- PRODUCE -->
+        <div class="grocery-category">
+          <div class="category-header">
+            <div class="category-border" style="background:var(--color-cat-produce);"></div>
+            <span class="category-name">PRODUCE</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="grocery-item-name done">Baby Spinach</span>
+            <span class="grocery-item-qty">2 cups</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="grocery-item-name done">Lemon</span>
+            <span class="grocery-item-qty">2 whole</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Wild Mushrooms</span>
+            <span class="grocery-item-qty">300g</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Fresh Thyme</span>
+            <span class="grocery-item-qty">1 bunch</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Shallots</span>
+            <span class="grocery-item-qty">2 medium</span>
+          </div>
+        </div>
+
+        <!-- DAIRY & EGGS -->
+        <div class="grocery-category">
+          <div class="category-header">
+            <div class="category-border" style="background:var(--color-cat-dairy);"></div>
+            <span class="category-name">DAIRY &amp; EGGS</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Parmesan Cheese</span>
+            <span class="grocery-item-qty">100g</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Unsalted Butter</span>
+            <span class="grocery-item-qty">50g</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="grocery-item-name done">Eggs</span>
+            <span class="grocery-item-qty">6 large</span>
+          </div>
+        </div>
+
+        <!-- PANTRY -->
+        <div class="grocery-category">
+          <div class="category-header">
+            <div class="category-border" style="background:var(--color-cat-pantry);"></div>
+            <span class="category-name">PANTRY</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Arborio Rice</span>
+            <span class="grocery-item-qty">1.5 cups</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Vegetable Broth</span>
+            <span class="grocery-item-qty">4 cups</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="grocery-item-name done">Olive Oil</span>
+            <span class="grocery-item-qty">3 tbsp</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox checked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="grocery-item-name done">White Wine</span>
+            <span class="grocery-item-qty">½ cup</span>
+          </div>
+        </div>
+
+        <!-- MEAT & SEAFOOD -->
+        <div class="grocery-category">
+          <div class="category-header">
+            <div class="category-border" style="background:var(--color-cat-meat);"></div>
+            <span class="category-name">MEAT &amp; SEAFOOD</span>
+          </div>
+          <div class="grocery-item" onclick="toggleCheck(this)">
+            <div class="grocery-checkbox"></div>
+            <span class="grocery-item-name">Chicken Breast</span>
+            <span class="grocery-item-qty">400g</span>
+          </div>
+        </div>
+
+        <!-- Spacer for sticky bar -->
+        <div style="height:16px;"></div>
+      </div><!-- /screen-content -->
+
+      <!-- Sticky Bottom Bar -->
+      <div class="grocery-sticky-bar">
+        <button class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Custom Item
+        </button>
+        <button class="btn btn-outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Share List
+        </button>
+      </div>
+    </div><!-- /screen-grocery -->
+
+
+    <!-- ======================================================
+         SCREEN 6: MY COLLECTIONS
+         ====================================================== -->
+    <div class="screen" id="screen-collections">
+      <div class="top-bar" style="position:relative;">
+        <div class="top-bar-left">
+          <button class="icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+        <span class="top-bar-title">My Collections</span>
+        <div class="top-bar-right">
+          <button class="icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <!-- Filter Tabs -->
+        <div class="collection-filter-row">
+          <span class="pill pill-filled" onclick="setCollFilter(this)">All</span>
+          <span class="pill pill-muted" onclick="setCollFilter(this)">Favorites</span>
+          <span class="pill pill-muted" onclick="setCollFilter(this)">Breakfast</span>
+          <span class="pill pill-muted" onclick="setCollFilter(this)">Lunch</span>
+          <span class="pill pill-muted" onclick="setCollFilter(this)">Dinner</span>
+          <span class="pill pill-muted" onclick="setCollFilter(this)">Vegetarian</span>
+        </div>
+
+        <div class="collection-count">24 saved recipes</div>
+
+        <!-- FAVORITES Group -->
+        <div class="collection-group">
+          <div class="collection-group-header" onclick="toggleGroup(this)">
+            <span class="cg-icon">❤️</span>
+            <span class="cg-title">FAVORITES</span>
+            <span class="cg-count">8 recipes</span>
+            <span class="cg-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="h-scroll">
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#e0c3fc,#8ec5fc);height:100px;">🍄</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Mushroom Risotto</div>
+                <div class="cc-meta">
+                  <span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Italian</span>
+                </div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>30 min</div>
+              </div>
+            </div>
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#f093fb,#f5576c);height:100px;">🍛</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Chicken Tikka Masala</div>
+                <div class="cc-meta">
+                  <span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Indian</span>
+                </div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>40 min</div>
+              </div>
+            </div>
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);height:100px;">🍜</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Pad Thai</div>
+                <div class="cc-meta">
+                  <span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Thai</span>
+                </div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>25 min</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEEKNIGHT DINNERS Group -->
+        <div class="collection-group">
+          <div class="collection-group-header" onclick="toggleGroup(this)">
+            <span class="cg-icon">🌙</span>
+            <span class="cg-title">WEEKNIGHT DINNERS</span>
+            <span class="cg-count">6 recipes</span>
+            <span class="cg-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="h-scroll">
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#f6d365,#fda085);height:100px;">🍝</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Lemon Herb Pasta</div>
+                <div class="cc-meta"><span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Italian</span></div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>25 min</div>
+              </div>
+            </div>
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#a8edea,#fed6e3);height:100px;">🐟</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Grilled Salmon</div>
+                <div class="cc-meta"><span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">American</span></div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>20 min</div>
+              </div>
+            </div>
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#fccb90,#d57eeb);height:100px;">🌮</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Beef Tacos</div>
+                <div class="cc-meta"><span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Mexican</span></div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>20 min</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HEALTHY BREAKFASTS Group -->
+        <div class="collection-group">
+          <div class="collection-group-header" onclick="toggleGroup(this)">
+            <span class="cg-icon">☀️</span>
+            <span class="cg-title">HEALTHY BREAKFASTS</span>
+            <span class="cg-count">5 recipes</span>
+            <span class="cg-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="h-scroll">
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#d4fc79,#96e6a1);height:100px;">🥑</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Avocado Toast</div>
+                <div class="cc-meta"><span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Breakfast</span></div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>10 min</div>
+              </div>
+            </div>
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#ffecd2,#fcb69f);height:100px;">🥣</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Greek Yogurt Parfait</div>
+                <div class="cc-meta"><span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Breakfast</span></div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>10 min</div>
+              </div>
+            </div>
+            <div class="collection-card" onclick="goToScreen('screen-detail')">
+              <div class="cc-img"><div class="img-placeholder" style="background:linear-gradient(135deg,#a1c4fd,#c2e9fb);height:100px;">🫐</div></div>
+              <button class="cc-menu"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+              <div class="cc-body">
+                <div class="cc-title">Smoothie Bowl</div>
+                <div class="cc-meta"><span class="pill pill-tag" style="font-size:10px;padding:2px 8px;">Breakfast</span></div>
+                <div class="cc-time" style="margin-top:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>10 min</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:16px;"></div>
+      </div><!-- /screen-content -->
+    </div><!-- /screen-collections -->
+
+  </div><!-- /screen-wrap -->
+
+  <!-- ======================================================
+       GLOBAL BOTTOM NAVIGATION
+       ====================================================== -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-home" onclick="goToScreen('screen-home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" id="nav-search" onclick="goToScreen('screen-search')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <span>Search</span>
+    </button>
+    <button class="nav-item" id="nav-planner" onclick="goToScreen('screen-planner')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      <span>Calendar</span>
+    </button>
+    <button class="nav-item" id="nav-grocery" onclick="goToScreen('screen-grocery')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span>Grocery List</span>
+    </button>
+    <button class="nav-item" id="nav-collections" onclick="goToScreen('screen-collections')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>Collections</span>
+    </button>
+  </nav>
+
+</div><!-- /device-shell -->
+
+
+<script>
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+const screenNavMap = {
+  'screen-home':        'nav-home',
+  'screen-search':      'nav-search',
+  'screen-detail':      'nav-search',
+  'screen-planner':     'nav-planner',
+  'screen-grocery':     'nav-grocery',
+  'screen-collections': 'nav-collections',
+};
+
+function goToScreen(id) {
+  // Hide all screens
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  // Show target
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    // Scroll to top
+    const content = target.querySelector('.screen-content');
+    if (content) content.scrollTop = 0;
+  }
+  // Update nav active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navId = screenNavMap[id];
+  if (navId) document.getElementById(navId).classList.add('active');
+}
+
+/* ============================================================
+   RECIPE DETAIL – TAB SWITCHING
+   ============================================================ */
+function setDetailTab(el, tabId) {
+  // Deactivate all tabs
+  el.parentElement.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  // Hide all tab content
+  ['tab-overview','tab-ingredients','tab-instructions'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  const tab = document.getElementById(tabId);
+  if (tab) tab.style.display = 'block';
+}
+
+/* ============================================================
+   RECIPE DETAIL – FAVORITE TOGGLE
+   ============================================================ */
+function toggleFav() {
+  const btn = document.getElementById('fav-btn');
+  const svg = btn.querySelector('svg');
+  if (btn.classList.contains('favorited')) {
+    btn.classList.remove('favorited');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+  } else {
+    btn.classList.add('favorited');
+    svg.setAttribute('fill', 'currentColor');
+    svg.removeAttribute('stroke');
+    svg.removeAttribute('stroke-width');
+  }
+}
+
+/* ============================================================
+   SEARCH – TOGGLE SWITCH
+   ============================================================ */
+function setToggle(mode) {
+  document.getElementById('toggle-inapp').classList.toggle('active', mode === 'inapp');
+  document.getElementById('toggle-web').classList.toggle('active', mode === 'web');
+}
+
+/* ============================================================
+   SEARCH – FILTER CHIPS
+   ============================================================ */
+function setFilter(el) {
+  el.closest('.filter-chips-row').querySelectorAll('.pill').forEach(p => {
+    p.className = 'pill pill-muted';
+  });
+  el.className = 'pill pill-filled';
+}
+
+/* ============================================================
+   COLLECTIONS – FILTER TABS
+   ============================================================ */
+function setCollFilter(el) {
+  el.closest('.collection-filter-row').querySelectorAll('.pill').forEach(p => {
+    p.className = 'pill pill-muted';
+  });
+  el.className = 'pill pill-filled';
+}
+
+/* ============================================================
+   COLLECTIONS – COLLAPSE/EXPAND GROUP
+   ============================================================ */
+function toggleGroup(header) {
+  const row = header.nextElementSibling;
+  const arrow = header.querySelector('.cg-arrow svg');
+  if (row.style.display === 'none') {
+    row.style.display = 'flex';
+    arrow.style.transform = '';
+  } else {
+    row.style.display = 'none';
+    arrow.style.transform = 'rotate(90deg)';
+  }
+}
+
+/* ============================================================
+   GROCERY LIST – CHECKBOX TOGGLE
+   ============================================================ */
+function toggleCheck(item) {
+  const cb = item.querySelector('.grocery-checkbox');
+  const name = item.querySelector('.grocery-item-name');
+  if (cb.classList.contains('checked')) {
+    cb.classList.remove('checked');
+    cb.innerHTML = '';
+    name.classList.remove('done');
+  } else {
+    cb.classList.add('checked');
+    cb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+    name.classList.add('done');
+  }
+}
+
+/* ============================================================
+   MEAL PLANNER – DAY SELECTION
+   ============================================================ */
+function selectDay(el) {
+  el.closest('.week-strip').querySelectorAll('.day-col').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+
+</body>
+</html>
