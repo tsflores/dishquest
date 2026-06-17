@@ -1,5 +1,8 @@
 
 require('dotenv').config();
+// Node's bundled DNS resolver can fall back to an unreachable 127.0.0.1
+// instead of the OS-configured servers, breaking the mongodb+srv:// lookup.
+require('dns').setServers(['1.1.1.1', '1.0.0.1']);
 const express = require('express');
 const path = require('node:path');
 const bodyparser = require('body-parser');
