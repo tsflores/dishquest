@@ -1,0 +1,33 @@
+import { useNavigate } from 'react-router-dom';
+import RecipeWebBadge from './RecipeWebBadge';
+
+export default function RecipeCardVertical({ recipe, source = 'internal' }) {
+  const navigate = useNavigate();
+  const id = source === 'external' ? recipe.id : recipe._id;
+  const path = source === 'external' ? `/recipe/external/${id}` : `/recipe/${id}`;
+  const label = recipe.name || recipe.label;
+  const image = recipe.image?.url || recipe.image;
+
+  return (
+    <div
+      className="bg-white rounded-card overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform"
+      onClick={() => navigate(path)}
+    >
+      <div className="aspect-square bg-gray-100 relative">
+        {image ? (
+          <img src={image} alt={label} className="w-full h-full object-cover" loading="lazy" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-300 text-3xl">🍽</div>
+        )}
+        {source === 'external' && (
+          <span className="absolute top-2 right-2">
+            <RecipeWebBadge />
+          </span>
+        )}
+      </div>
+      <div className="p-3">
+        <p className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug">{label}</p>
+      </div>
+    </div>
+  );
+}

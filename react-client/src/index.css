@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #2D6A4F;
+  --color-bg: #FAF3E0;
+  --color-accent: #E76F51;
+  --color-surface: #FFFFFF;
+}
+
+body {
+  background-color: var(--color-bg);
+  font-family: 'Inter', sans-serif;
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100dvh;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
