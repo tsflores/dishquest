@@ -57,30 +57,30 @@ Phases 1, 2, and 3 are complete. This file tracks what's left.
 ### Dashboard wiring
 - [x] `RecentlySavedRow.jsx` wired to `GET /api/collections`, flattened + sorted by `addedAt`, latest 8
 
-### Dashboard wiring
-- [ ] Wire `RecentlySavedRow` to real collection data from `GET /api/collections`
-
 ---
 
-## Phase 5 — Meal Planner + Grocery List
+## Phase 5 — Meal Planner + Grocery List (complete)
 
 ### MealPlanner screen
-- [ ] `DailyMealsList.jsx` — list of meal slots for the selected day
-- [ ] `WeeklySummaryCard.jsx` — calorie/meal count summary for the week
-- [ ] `AddMealFAB.jsx` — floating action button → opens recipe picker → `POST /api/meal-plans/:id/slots`
-- [ ] Wire all into `MealPlanner.jsx` with `WeekCalendarStrip` day selector
+- [x] `DailyMealsList.jsx` — list of meal slots for the selected day
+- [x] `WeeklySummaryCard.jsx` — meal count summary for the week (per-meal-type breakdown + progress bar; no calorie data available — internal recipes have none and meal-plan slots only snapshot name/image, not nutrition)
+- [x] `AddMealFAB.jsx` — round FAB → 2-step modal (meal type → `RecipePickerList`) → `POST /api/meal-plans/:id/slots`
+- [x] Wire all into `MealPlanner.jsx` with `WeekCalendarStrip` day selector
 
 ### GroceryList screen
-- [ ] `CategorySection.jsx` — collapsible section per category (Produce, Dairy, Meat, Pantry, Other)
-- [ ] `GroceryItemRow.jsx` — item row with checkbox toggle → `PUT /api/grocery-lists/:id/items/:itemId`
-- [ ] `StickyActionBar.jsx` — "Generate from Meal Plan" button → `POST /api/grocery-lists/generate`
-- [ ] Wire all into `GroceryList.jsx`
+- [x] `CategorySection.jsx` — collapsible section per category (Produce, Dairy, Meat, Pantry, Other)
+- [x] `GroceryItemRow.jsx` — item row with checkbox toggle → `PUT /api/grocery-lists/:id/items/:itemId`
+- [x] `StickyActionBar.jsx` — "Generate from Meal Plan" button → `POST /api/grocery-lists/generate`
+- [x] Wire all into `GroceryList.jsx`
 
 ### Dashboard wiring
-- [ ] Wire `WeeklyPlanPreview` to active meal plan from `GET /api/meal-plans`
+- [x] Wire `WeeklyPlanPreview` to active meal plan from `GET /api/meal-plans` (reuses `CollectionHorizontalRow` — meal-plan slots already share the `{recipeId, recipeSource, recipeName, recipeImage}` shape)
+
+### Also wired (gap from Phase 2/3 stub, natural fit for this phase)
+- [x] `RecipeDetail/ActionButtons.jsx` "Add to Meal Plan" button — was a toast stub since Phase 2; now opens `AddToPlanModal` (day → meal type) and adds the current recipe (internal or external, persisting external hits via `ExternalRecipe` first, same pattern as "Save to Collection") to the current week's plan
 
 ### End-to-end test
-- [ ] Add recipes to meal slots → generate grocery list → check items off
+- [x] Add recipes to meal slots → generate grocery list → check items off — verified via Playwright (signup → add 2 meals across 2 days, summary counts updated correctly → generate produced an empty list because both meals were legacy internal recipes with no structured ingredients, by design; seeded items via the API to confirm `CategorySection`/`GroceryItemRow` render and the checkbox toggle works) → also verified `RecipeDetail`'s "Add to Meal Plan" button end-to-end (day → meal type → toast)
 
 ---
 
