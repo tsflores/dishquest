@@ -3,12 +3,20 @@ require('dotenv').config();
 const express = require('express');
 const path = require('node:path');
 const bodyparser = require('body-parser');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const api_recipes = require('./routes/api/api-recipes');
 const authRoutes = require('./routes/auth/authenticate');
+const edamamRoutes = require('./routes/api/edamam');
+const mealPlanRoutes = require('./routes/api/meal-plans');
+const groceryListRoutes = require('./routes/api/grocery-lists');
+const collectionRoutes = require('./routes/api/collections');
+const scrapeRoutes = require('./routes/api/scrape');
 
 
 const app = express();
+
+app.use(cors());
 
 // Trust proxy for HTTPS behind reverse proxy
 app.set('trust proxy', 1);
@@ -32,22 +40,23 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 //have Express automatically deliver index.html from public directory for purposes of testing API
 app.use('/', express.static(path.join(__dirname, 'public')));
 
-app.use('/api/auth', authRoutes);
+app.get('/dishquest', (req, res) => res.redirect(301, '/'));
 
-//set up middleware for the api route
+app.use('/api/auth', authRoutes);
 app.use('/api/recipes', api_recipes);
+app.use('/api/edamam', edamamRoutes);
+app.use('/api/meal-plans', mealPlanRoutes);
+app.use('/api/grocery-lists', groceryListRoutes);
+app.use('/api/collections', collectionRoutes);
+app.use('/api/scrape', scrapeRoutes);
 
 app.use('/', (req, res) => {
-   // filter for actual files we want to deliver from disk
-   const pattern = new RegExp('(.css|.html|.js|.ico|.jpg|.png|.webp|.svg)+\/?$', 'gi'); 
+   const pattern = new RegExp('(.css|.html|.js|.ico|.jpg|.png|.webp|.svg)+\/?$', 'gi');
    if (pattern.test(req.url)) {
-      // in cases where the Angular app is mounted at the root url, we may need to strip a trailing slash from the redirected request 
       const url = req.url.replace(/\/$/, "");
-      // deliver the requested file
-      res.sendFile(path.resolve(__dirname, `../client/dist/dishquest/browser/${url}`));
+      res.sendFile(path.resolve(__dirname, `../react-client/dist/${url}`));
    } else {
-      // in this case, the request should be handled by Angular, which is index.html
-      res.sendFile(path.resolve(__dirname, '../client/dist/dishquest/browser/index.html'));
+      res.sendFile(path.resolve(__dirname, '../react-client/dist/index.html'));
    }
 });
 
