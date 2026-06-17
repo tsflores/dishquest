@@ -33,22 +33,29 @@ Phases 1, 2, and 3 are complete. This file tracks what's left.
 
 ---
 
-## Phase 4 — Collections + Web Scraping
+## Phase 4 — Collections + Web Scraping (complete)
 
 ### Collections screen
-- [ ] `CollectionFilterTabs.jsx` — tab row to filter by collection name
-- [ ] `CollectionGroup.jsx` — section header + recipe list for one collection
-- [ ] `CollectionHorizontalRow.jsx` — horizontal scroll row of recipe cards
-- [ ] Wire all into `Collections.jsx`
+- [x] `CollectionFilterTabs.jsx` — tab row to filter by collection name, "+ New" creates a collection
+- [x] `CollectionGroup.jsx` — section header + recipe list for one collection, delete (non-default only)
+- [x] `CollectionHorizontalRow.jsx` — horizontal scroll row of recipe cards (moved to `components/recipe/` — shared with Dashboard's `RecentlySavedRow`)
+- [x] Wire all into `Collections.jsx`
 
 ### Save to Collection flow (in RecipeDetail)
-- [ ] Finish `ActionButtons.jsx` — "Save to Collection" opens a modal listing user's collections with option to create new
-- [ ] On confirm: `POST /api/collections/:id/recipes`
+- [x] Finish `ActionButtons.jsx` — "Save to Collection" opens `CollectionPickerModal` listing user's collections with option to create new
+- [x] On confirm: `POST /api/collections/:id/recipes`
 
 ### URL import / web scraping flow
-- [ ] URL input modal (accessible from Collections screen)
-- [ ] On submit: `POST /api/scrape` → show preview of scraped recipe name + ingredient count
-- [ ] On confirm: save to selected collection via `POST /api/collections/:id/recipes`
+- [x] `ImportUrlModal.jsx` — 3-step modal (url → preview → pick collection), accessible from Collections screen
+- [x] On submit: `POST /api/scrape` → preview shows scraped recipe name + ingredient count
+- [x] On confirm: save to selected collection via `POST /api/collections/:id/recipes`
+
+### Server gap closed (not in original task list, needed for the above to work)
+- [x] `server/controllers/externalRecipeController.js` + `server/routes/api/external-recipes.js` (`GET /:id`, `POST /`) — the `collectionRecipeSchema.recipeId` is a Mongo ObjectId, but raw Edamam hits and scraped pages have no DB id. `POST /api/scrape` now persists (upserts by `sourceUrl`) into `ExternalRecipe` and returns the saved doc; "Save to Collection" on a still-unsaved Edamam hit calls the same upsert via `POST /api/external-recipes` first to get a real `_id`.
+- [x] `RecipeDetail.jsx` now fetches `/recipe/external/:id` via `GET /api/external-recipes/:id` first (server truth), falling back to router `state.recipe` only if not persisted (raw Edamam hit never opened before) — this is what makes clicking a saved collection card actually load the full recipe instead of just the thumbnail fields.
+
+### Dashboard wiring
+- [x] `RecentlySavedRow.jsx` wired to `GET /api/collections`, flattened + sorted by `addedAt`, latest 8
 
 ### Dashboard wiring
 - [ ] Wire `RecentlySavedRow` to real collection data from `GET /api/collections`

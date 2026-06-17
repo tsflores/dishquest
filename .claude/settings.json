@@ -1,9 +1,9 @@
-// {
-//   "permissions": {
-//     "allow": ["Bash(npm run *)"],
-//     "ask": [
-//       "Bash(rm *)", "Bash(mv *)"
-//     ],
-//     "deny": ["Bash(git push *"]
-//   }
-// }
+{
+  "permissions": {
+    "allow": ["Bash(npm run *)"],
+    "ask": [
+      "Bash(rm *)", "Bash(mv *)"
+    ],
+    "deny": ["Bash(git push *)"]
+  }
+}
