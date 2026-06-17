@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const cheerio = require('cheerio');
 const verifyToken = require('../../middleware/auth');
+const ExternalRecipeService = require('../../controllers/externalRecipeController');
 
 router.use(verifyToken);
 
@@ -118,19 +119,24 @@ router.post('/', async (req, res) => {
     return res.status(422).json({ error: 'Could not extract ingredients from this page.' });
   }
 
-  res.json({
-    sourceUrl: url,
-    sourceDomain,
-    name: result.name,
-    description: result.description || null,
-    image: result.image || null,
-    preptime: result.preptime || null,
-    cooktime: result.cooktime || null,
-    servings: result.servings || null,
-    ingredients: result.ingredients,
-    instructions: result.instructions || [],
-    nutrition: result.nutrition || null,
-  });
+  try {
+    const saved = await ExternalRecipeService.upsert(req.user.id, {
+      sourceUrl: url,
+      sourceDomain,
+      name: result.name,
+      description: result.description || '',
+      image: result.image || '',
+      preptime: result.preptime || '',
+      cooktime: result.cooktime || '',
+      servings: result.servings || '',
+      ingredients: result.ingredients,
+      instructions: result.instructions || [],
+      nutrition: result.nutrition || undefined,
+    });
+    res.json(saved);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

@@ -1,11 +1,57 @@
+import { useState } from 'react';
 import AppShell from '../../components/layout/AppShell';
+import Spinner from '../../components/ui/Spinner';
+import Button from '../../components/ui/Button';
+import CollectionFilterTabs from './CollectionFilterTabs';
+import CollectionGroup from './CollectionGroup';
+import ImportUrlModal from './ImportUrlModal';
+import { useCollections } from '../../hooks/useCollections';
+import { collectionService } from '../../services/collectionService';
 
 export default function Collections() {
+  const { collections, loading, reload } = useCollections();
+  const [active, setActive] = useState(null);
+  const [importOpen, setImportOpen] = useState(false);
+
+  const visible = active ? collections.filter((c) => c._id === active) : collections;
+
+  const handleDelete = async (collection) => {
+    if (!window.confirm(`Delete "${collection.name}"? This can't be undone.`)) return;
+    await collectionService.delete(collection._id);
+    if (active === collection._id) setActive(null);
+    reload();
+  };
+
   return (
     <AppShell title="Collections">
-      <div className="px-4 py-6 md:px-8 md:py-8">
-        <p className="text-sm text-gray-500">Collections coming in Phase 4.</p>
+      <div className="px-4 py-6 space-y-5 md:px-8 md:py-8">
+        <CollectionFilterTabs
+          collections={collections}
+          active={active}
+          onChange={setActive}
+          onCreated={reload}
+        />
+
+        <Button variant="outline" className="w-full" onClick={() => setImportOpen(true)}>
+          Import recipe from URL
+        </Button>
+
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <Spinner className="text-forest-green w-8 h-8" />
+          </div>
+        ) : visible.length === 0 ? (
+          <p className="text-sm text-gray-400 text-center py-10">No collections yet.</p>
+        ) : (
+          <div className="space-y-6">
+            {visible.map((c) => (
+              <CollectionGroup key={c._id} collection={c} onDelete={handleDelete} />
+            ))}
+          </div>
+        )}
       </div>
+
+      <ImportUrlModal open={importOpen} onClose={() => setImportOpen(false)} onSaved={reload} />
     </AppShell>
   );
 }

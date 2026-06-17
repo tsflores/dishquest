@@ -15,6 +15,7 @@ const mealPlanRoutes = require('./routes/api/meal-plans');
 const groceryListRoutes = require('./routes/api/grocery-lists');
 const collectionRoutes = require('./routes/api/collections');
 const scrapeRoutes = require('./routes/api/scrape');
+const externalRecipeRoutes = require('./routes/api/external-recipes');
 
 
 const app = express();
@@ -52,6 +53,7 @@ app.use('/api/meal-plans', mealPlanRoutes);
 app.use('/api/grocery-lists', groceryListRoutes);
 app.use('/api/collections', collectionRoutes);
 app.use('/api/scrape', scrapeRoutes);
+app.use('/api/external-recipes', externalRecipeRoutes);
 
 app.use('/', (req, res) => {
    const pattern = new RegExp('(.css|.html|.js|.ico|.jpg|.png|.webp|.svg)+\/?$', 'gi');

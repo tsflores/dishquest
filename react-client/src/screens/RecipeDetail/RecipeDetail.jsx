@@ -10,6 +10,7 @@ import OverviewTab from './OverviewTab';
 import IngredientsTab from './IngredientsTab';
 import InstructionsTab from './InstructionsTab';
 import { recipeService } from '../../services/recipeService';
+import { externalRecipeService } from '../../services/externalRecipeService';
 
 const TAB_COMPONENTS = {
   overview: OverviewTab,
@@ -22,20 +23,32 @@ export default function RecipeDetail() {
   const location = useLocation();
   const isExternal = location.pathname.startsWith('/recipe/external/');
 
-  const [recipe, setRecipe] = useState(isExternal ? location.state?.recipe ?? null : null);
-  const [loading, setLoading] = useState(!isExternal);
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tab, setTab] = useState('overview');
 
   useEffect(() => {
-    if (isExternal) {
-      if (!location.state?.recipe) {
-        setError("We lost this recipe's details. Go back and open it from search again.");
-      }
-      return;
-    }
     setLoading(true);
     setError(null);
+
+    if (isExternal) {
+      // Persisted external recipes (saved via scrape or "Save to Collection") are
+      // fetchable by id; raw Edamam search hits aren't persisted, so they only ever
+      // arrive via router state from the search card click — fall back to that.
+      externalRecipeService.get(id)
+        .then(setRecipe)
+        .catch(() => {
+          if (location.state?.recipe) {
+            setRecipe(location.state.recipe);
+          } else {
+            setError("We lost this recipe's details. Go back and open it from search again.");
+          }
+        })
+        .finally(() => setLoading(false));
+      return;
+    }
+
     recipeService.get(id)
       .then(setRecipe)
       .catch((e) => setError(e.message))
