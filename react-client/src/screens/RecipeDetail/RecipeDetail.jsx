@@ -56,12 +56,32 @@ export default function RecipeDetail() {
       ) : recipe ? (
         <div>
           <HeroImage image={recipe.image} alt={recipe.name} />
-          <div className="px-4 -mt-6 relative z-10">
+          <div className="px-4 -mt-6 relative z-10 md:px-8">
             <DetailHeader recipe={recipe} source={source} />
             <ActionButtons recipe={recipe} source={source} />
-            <DetailTabs active={tab} onChange={setTab} />
-            <div className="py-4">
-              <TabComponent recipe={recipe} source={source} />
+
+            {/* Phone: tab-switching, one section visible at a time */}
+            <div className="md:hidden">
+              <DetailTabs active={tab} onChange={setTab} />
+              <div className="py-4">
+                <TabComponent recipe={recipe} source={source} />
+              </div>
+            </div>
+
+            {/* Tablet: overview up top, ingredients pinned alongside scrolling
+                instructions so both stay visible while cooking */}
+            <div className="hidden md:block py-4">
+              <OverviewTab recipe={recipe} source={source} />
+            </div>
+            <div className="hidden md:grid md:grid-cols-[320px_1fr] md:gap-8 md:items-start md:pb-10">
+              <div className="md:sticky md:top-20">
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Ingredients</h3>
+                <IngredientsTab recipe={recipe} source={source} />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">Instructions</h3>
+                <InstructionsTab recipe={recipe} source={source} />
+              </div>
             </div>
           </div>
         </div>

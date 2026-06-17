@@ -71,7 +71,7 @@ export default function RecipeSearch() {
 
   return (
     <AppShell title="Search">
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 pt-4 space-y-3 md:px-8">
         <SearchToggle
           value={mode}
           onChange={(m) => { setMode(m); setMealType(null); setResults([]); setSearched(false); setError(null); }}

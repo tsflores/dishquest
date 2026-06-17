@@ -13,9 +13,16 @@
 body {
   background-color: var(--color-bg);
   font-family: 'Inter', sans-serif;
-  max-width: 390px;
-  margin: 0 auto;
   min-height: 100dvh;
+}
+
+/* Phone layout stays capped at the mobile-first design width.
+   Tablet (md, 768px+) lets the app use the full viewport for the sidebar/split layouts. */
+@media (max-width: 767.98px) {
+  body {
+    max-width: 390px;
+    margin: 0 auto;
+  }
 }
 
 * {

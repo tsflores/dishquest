@@ -3,12 +3,12 @@ import BottomNav from './BottomNav';
 
 export default function AppShell({ title, back, action, children, hideNav = false }) {
   return (
-    <div className="flex flex-col min-h-dvh bg-warm-cream">
-      <TopBar title={title} back={back} action={action} />
-      <main className="flex-1 overflow-y-auto pb-20 pt-14">
-        {children}
-      </main>
+    <div className="min-h-dvh bg-warm-cream">
       {!hideNav && <BottomNav />}
+      <TopBar title={title} back={back} action={action} offsetSidebar={!hideNav} />
+      <main className={`pt-14 ${hideNav ? 'pb-6' : 'pb-20 md:pb-8 md:pl-20'}`}>
+        <div className="md:max-w-4xl md:mx-auto">{children}</div>
+      </main>
     </div>
   );
 }

@@ -9,7 +9,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   return (
     <AppShell title="NourishPlan">
-      <div className="px-4 py-6 space-y-6">
+      <div className="px-4 py-6 space-y-6 md:px-8 md:py-8">
         <GreetingSection name={user?.name || user?.username} />
         <WeeklyPlanPreview />
         <RecommendedGrid />

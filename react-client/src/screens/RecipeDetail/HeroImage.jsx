@@ -4,7 +4,7 @@ export default function HeroImage({ image, alt }) {
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
-    <div className="w-full aspect-[4/3] bg-gray-100">
+    <div className="w-full aspect-[4/3] md:aspect-[16/7] bg-gray-100">
       {image && !imageFailed ? (
         <img
           src={image}

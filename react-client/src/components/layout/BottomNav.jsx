@@ -30,14 +30,19 @@ const tabs = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] h-16 bg-white border-t border-gray-100 z-40 flex">
+    <nav
+      className="fixed z-40 bg-white flex
+        bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[390px] h-16 border-t border-gray-100
+        md:left-0 md:top-0 md:bottom-0 md:translate-x-0 md:w-20 md:h-auto md:max-w-none
+        md:flex-col md:items-stretch md:gap-2 md:pt-6 md:border-t-0 md:border-r"
+    >
       {tabs.map((tab) => (
         <NavLink
           key={tab.to}
           to={tab.to}
           end={tab.to === '/'}
           className={({ isActive }) =>
-            `flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors ${
+            `flex-1 md:flex-none flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
               isActive ? 'text-forest-green' : 'text-gray-400'
             }`
           }

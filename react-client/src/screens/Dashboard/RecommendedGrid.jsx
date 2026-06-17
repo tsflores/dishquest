@@ -24,7 +24,7 @@ export default function RecommendedGrid() {
   return (
     <div>
       <h3 className="text-sm font-semibold text-gray-900 mb-2">Recommended for you</h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {sample.map((recipe) => (
           <RecipeCardVertical key={recipe._id} recipe={recipe} source="internal" />
         ))}
