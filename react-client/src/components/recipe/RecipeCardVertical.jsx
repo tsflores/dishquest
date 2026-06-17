@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecipeWebBadge from './RecipeWebBadge';
 
 export default function RecipeCardVertical({ recipe, source = 'internal' }) {
   const navigate = useNavigate();
+  const [imageFailed, setImageFailed] = useState(false);
   const id = source === 'external' ? recipe.id : recipe._id;
   const path = source === 'external' ? `/recipe/external/${id}` : `/recipe/${id}`;
   const label = recipe.name || recipe.label;
@@ -11,11 +13,17 @@ export default function RecipeCardVertical({ recipe, source = 'internal' }) {
   return (
     <div
       className="bg-white rounded-card overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform"
-      onClick={() => navigate(path)}
+      onClick={() => navigate(path, source === 'external' ? { state: { recipe } } : undefined)}
     >
       <div className="aspect-square bg-gray-100 relative">
-        {image ? (
-          <img src={image} alt={label} className="w-full h-full object-cover" loading="lazy" />
+        {image && !imageFailed ? (
+          <img
+            src={image}
+            alt={label}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            onError={() => setImageFailed(true)}
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-300 text-3xl">🍽</div>
         )}

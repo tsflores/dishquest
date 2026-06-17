@@ -1,34 +1,35 @@
 # NourishPlan — Remaining Work by Phase
 
-Phases 1 and 2 are complete. This file tracks what's left.
+Phases 1, 2, and 3 are complete. This file tracks what's left.
 
 ---
 
-## Phase 3 — Recipe Search and Detail
+## Phase 3 — Recipe Search and Detail (complete)
 
 ### RecipeSearch screen
-- [ ] `SearchBar.jsx`
-- [ ] `SearchToggle.jsx` — segmented control: In-App / Web
-- [ ] `FilterRow.jsx` — horizontal pill row for cuisine, meal type, diet, etc.
-- [ ] `SearchResultsList.jsx` — renders `RecipeCardVertical` grid or `RecipeCardHorizontal` list
-- [ ] Wire all into `RecipeSearch.jsx` — In-App toggle hits `GET /api/recipes?q=...`, Web toggle hits `GET /api/edamam/search?q=...`
+- [x] `SearchBar.jsx`
+- [x] `SearchToggle.jsx` — segmented control: In-App / Web
+- [x] `FilterRow.jsx` — horizontal pill row for cuisine, meal type, diet, etc.
+- [x] `SearchResultsList.jsx` — renders `RecipeCardVertical` grid
+- [x] Wire all into `RecipeSearch.jsx` — In-App toggle hits `GET /api/recipes?q=...`, Web toggle hits `GET /api/edamam/search?q=...`
+  - Note: in-app `meal` filter pills are derived from the real (lowercase, free-text) `meal` values in the data, not the `MEAL_TYPES` constant — that constant matches Edamam's capitalized vocabulary, which doesn't overlap with the legacy dataset.
 
 ### RecipeDetail screen
-- [ ] `HeroImage.jsx`
-- [ ] `DetailHeader.jsx` — name, chef/source, prep/cook time
-- [ ] `ActionButtons.jsx` — "Add to Meal Plan" / "Save to Collection" (stubs ok, wired in Phase 4/5)
-- [ ] `DetailTabs.jsx` — Overview / Ingredients / Instructions tab switcher
-- [ ] `OverviewTab.jsx` — description
-- [ ] `IngredientsTab.jsx` — for in-app recipes: "Ingredients are in the recipe PDF"; for external: full list
-- [ ] `InstructionsTab.jsx` — for in-app recipes: "View Full Recipe PDF" link (`/static/pdfs/filename.pdf`); for external: step list
-- [ ] Wire all into `RecipeDetail.jsx` — handles both `/recipe/:id` (internal) and `/recipe/external/:id` (scraped/Edamam)
+- [x] `HeroImage.jsx`
+- [x] `DetailHeader.jsx` — name, chef/source, prep/cook time
+- [x] `ActionButtons.jsx` — "Add to Meal Plan" / "Save to Collection" (stub buttons show a toast; wired in Phase 4/5)
+- [x] `DetailTabs.jsx` — Overview / Ingredients / Instructions tab switcher
+- [x] `OverviewTab.jsx` — description, nutrition grid + source link for external recipes
+- [x] `IngredientsTab.jsx` — for in-app recipes: "Ingredients are in the recipe PDF"; for external: full list
+- [x] `InstructionsTab.jsx` — for in-app recipes: "View Full Recipe PDF" link; for external: step list if present, else "View Full Instructions" link to the source site (Edamam has no step data)
+- [x] Wire all into `RecipeDetail.jsx` — handles both `/recipe/:id` (internal, fetched via `recipeService.get`) and `/recipe/external/:id` (Edamam result, passed via router `state` from the search card click — Edamam has no get-by-id endpoint, so direct navigation/refresh shows a friendly "go back to search" message)
 
 ### Dashboard
-- [ ] `GreetingSection.jsx` — time-of-day greeting with user name
-- [ ] `RecommendedGrid.jsx` — 2-col grid, random slice of in-app recipes via `GET /api/recipes`
-- [ ] `WeeklyPlanPreview.jsx` — horizontal scroll placeholder (wired to real data in Phase 5)
-- [ ] `RecentlySavedRow.jsx` — placeholder (wired to real data in Phase 4)
-- [ ] Wire all into `Dashboard.jsx`
+- [x] `GreetingSection.jsx` — time-of-day greeting with user name
+- [x] `RecommendedGrid.jsx` — 2-col grid, random slice of in-app recipes via `GET /api/recipes`
+- [x] `WeeklyPlanPreview.jsx` — placeholder (wired to real data in Phase 5)
+- [x] `RecentlySavedRow.jsx` — placeholder (wired to real data in Phase 4)
+- [x] Wire all into `Dashboard.jsx`
 
 ---
 
