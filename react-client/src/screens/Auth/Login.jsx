@@ -36,7 +36,7 @@ export default function Login() {
           <div className="w-16 h-16 bg-forest-green rounded-2xl flex items-center justify-center mx-auto mb-3">
             <span className="text-white text-3xl">🌿</span>
           </div>
-          <h1 className="text-2xl font-bold text-forest-green">NourishPlan</h1>
+          <h1 className="text-2xl font-bold text-forest-green">DishQuest</h1>
           <p className="text-sm text-gray-400 mt-1">Your meal planning companion</p>
         </div>
 
