@@ -58,16 +58,22 @@ router.post("/", upload, async (req, res, next) => {
 	}
 });
 
-// return all of the documents in the database
-router.get("/", (req, res, next) => {
-	RecipeService.list()
-		.then((recipes) => {
-			res.status(200).json(recipes);
-		})
-		.catch((error) => {
-			console.error("Error retrieving recipes:", error);
-			res.status(500).json({ error: error.message || "Failed to retrieve recipes" });
-		});
+// return all of the documents in the database, with optional ?q= and ?meal= filtering
+router.get("/", async (req, res, next) => {
+	try {
+		let recipes = await RecipeService.list();
+		if (req.query.q) {
+			const re = new RegExp(req.query.q, 'i');
+			recipes = recipes.filter((r) => re.test(r.name) || re.test(r.description));
+		}
+		if (req.query.meal) {
+			recipes = recipes.filter((r) => r.meal === req.query.meal);
+		}
+		res.status(200).json(recipes);
+	} catch (error) {
+		console.error("Error retrieving recipes:", error);
+		res.status(500).json({ error: error.message || "Failed to retrieve recipes" });
+	}
 });
 
 //return any recipes in the collection that have favorite set to true
