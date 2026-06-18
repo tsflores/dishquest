@@ -26,11 +26,11 @@ export default function RecipePickerList({ onPick }) {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search recipes..."
         autoFocus
-        className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-pantry-slate"
+        className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary"
       />
       {loading ? (
         <div className="flex justify-center py-6">
-          <Spinner className="text-pantry-slate" />
+          <Spinner className="text-primary" />
         </div>
       ) : recipes.length === 0 ? (
         <p className="text-sm text-gray-400 text-center py-6">No recipes found.</p>

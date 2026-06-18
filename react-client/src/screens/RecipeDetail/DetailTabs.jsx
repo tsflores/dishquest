@@ -12,7 +12,7 @@ export default function DetailTabs({ active, onChange }) {
           key={t.key}
           onClick={() => onChange(t.key)}
           className={`flex-1 py-2.5 text-sm font-semibold border-b-2 transition-colors ${
-            active === t.key ? 'border-pantry-slate text-pantry-slate' : 'border-transparent text-gray-400'
+            active === t.key ? 'border-primary text-primary' : 'border-transparent text-gray-400'
           }`}
         >
           {t.label}

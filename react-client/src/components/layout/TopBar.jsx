@@ -1,8 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 export default function TopBar({ title, back, action, offsetSidebar = true }) {
   const navigate = useNavigate();
-  const sidebarClasses = offsetSidebar ? 'md:left-20 md:w-[calc(100%-5rem)]' : 'md:left-0 md:w-full';
+  const sidebarClasses = offsetSidebar
+    ? "md:left-20 md:w-[calc(100%-5rem)]"
+    : "md:left-0 md:w-full";
 
   return (
     <header
@@ -12,14 +14,16 @@ export default function TopBar({ title, back, action, offsetSidebar = true }) {
         {back && (
           <button
             onClick={() => navigate(-1)}
-            className="text-pantry-slate text-xl leading-none"
+            className="text-primary text-xl leading-none"
             aria-label="Go back"
           >
             ‹
           </button>
         )}
       </div>
-      <h1 className="text-base font-semibold text-gray-900 truncate">{title}</h1>
+      <h1 className="text-base font-semibold text-gray-900 truncate">
+        {title}
+      </h1>
       <div className="w-8 flex justify-end">{action ?? null}</div>
     </header>
   );

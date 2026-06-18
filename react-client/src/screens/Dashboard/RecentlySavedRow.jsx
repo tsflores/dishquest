@@ -23,7 +23,7 @@ export default function RecentlySavedRow() {
       <h3 className="text-sm font-semibold text-gray-900 mb-2">Recently saved</h3>
       {loading ? (
         <div className="flex justify-center py-4">
-          <Spinner className="text-pantry-slate" />
+          <Spinner className="text-primary" />
         </div>
       ) : recipes.length === 0 ? (
         <div className="bg-white rounded-card shadow-sm p-4 text-sm text-gray-400 text-center">

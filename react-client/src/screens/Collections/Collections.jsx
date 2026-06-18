@@ -38,7 +38,7 @@ export default function Collections() {
 
         {loading ? (
           <div className="flex justify-center py-10">
-            <Spinner className="text-pantry-slate w-8 h-8" />
+            <Spinner className="text-primary w-8 h-8" />
           </div>
         ) : visible.length === 0 ? (
           <p className="text-sm text-gray-400 text-center py-10">No collections yet.</p>

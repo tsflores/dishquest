@@ -22,11 +22,11 @@ export default function WeeklyPlanPreview() {
     <div>
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-semibold text-gray-900">This week's plan</h3>
-        <Link to="/planner" className="text-xs font-medium text-pantry-slate">View full plan</Link>
+        <Link to="/planner" className="text-xs font-medium text-primary">View full plan</Link>
       </div>
       {loading ? (
         <div className="flex justify-center py-4">
-          <Spinner className="text-pantry-slate" />
+          <Spinner className="text-primary" />
         </div>
       ) : slots.length === 0 ? (
         <div className="bg-white rounded-card shadow-sm p-4 text-sm text-gray-400 text-center">

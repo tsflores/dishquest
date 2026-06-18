@@ -6,7 +6,7 @@ export default function GroceryItemRow({ item, onToggle }) {
     >
       <span
         className={`w-5 h-5 flex-shrink-0 rounded-md border-2 flex items-center justify-center transition-colors ${
-          item.checked ? 'bg-herb-green border-herb-green text-white' : 'border-gray-300'
+          item.checked ? 'bg-success border-success text-white' : 'border-gray-300'
         }`}
       >
         {item.checked && (

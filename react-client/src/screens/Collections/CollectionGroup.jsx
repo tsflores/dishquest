@@ -8,7 +8,7 @@ export default function CollectionGroup({ collection, onDelete }) {
           {collection.name} <span className="text-gray-400 font-normal">({collection.recipes.length})</span>
         </h3>
         {!collection.isDefault && (
-          <button onClick={() => onDelete(collection)} className="text-xs text-paprika-red font-medium">
+          <button onClick={() => onDelete(collection)} className="text-xs text-alert font-medium">
             Delete
           </button>
         )}

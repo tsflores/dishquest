@@ -6,13 +6,13 @@ export default function SearchResultsList({ results, loading, error, searched, m
   if (loading) {
     return (
       <div className="flex justify-center py-10">
-        <Spinner className="text-pantry-slate w-8 h-8" />
+        <Spinner className="text-primary w-8 h-8" />
       </div>
     );
   }
 
   if (error) {
-    return <p className="px-4 text-sm text-paprika-red text-center py-6">{error}</p>;
+    return <p className="px-4 text-sm text-alert text-center py-6">{error}</p>;
   }
 
   if (!searched) {

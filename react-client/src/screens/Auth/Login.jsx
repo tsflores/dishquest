@@ -30,20 +30,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-dvh bg-pantry-white flex flex-col items-center justify-center px-6">
+    <div className="min-h-dvh bg-background flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-[342px]">
         <div className="mb-8 text-center">
-          <div className="w-16 h-16 bg-pantry-slate rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <span className="text-white text-3xl">🌿</span>
-          </div>
-          <h1 className="text-2xl font-bold text-pantry-slate">DishQuest</h1>
+          <img src="/icons/dishquest-logo-modern-pantry.svg" alt="DishQuest" className="h-16 mx-auto" />
           <p className="text-sm text-gray-400 mt-1">Your meal planning companion</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-card p-6 shadow-sm space-y-4">
           <h2 className="text-base font-semibold text-gray-900">Sign in</h2>
           {error && (
-            <p className="text-sm text-paprika-red bg-paprika-red/10 px-3 py-2 rounded-xl">{error}</p>
+            <p className="text-sm text-alert bg-alert/10 px-3 py-2 rounded-xl">{error}</p>
           )}
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1.5">Username</label>
@@ -51,7 +48,7 @@ export default function Login() {
               type="text"
               value={form.username}
               onChange={set('username')}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-pantry-slate transition-colors"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors"
               placeholder="Your username"
               required
               autoComplete="username"
@@ -63,7 +60,7 @@ export default function Login() {
               type="password"
               value={form.password}
               onChange={set('password')}
-              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-pantry-slate transition-colors"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition-colors"
               placeholder="••••••••"
               required
               autoComplete="current-password"
@@ -76,7 +73,7 @@ export default function Login() {
 
         <p className="text-center text-sm text-gray-400 mt-5">
           Don&apos;t have an account?{' '}
-          <Link to="/signup" className="text-pantry-slate font-semibold">Sign up</Link>
+          <Link to="/signup" className="text-primary font-semibold">Sign up</Link>
         </p>
       </div>
     </div>

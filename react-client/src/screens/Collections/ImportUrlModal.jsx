@@ -64,10 +64,10 @@ export default function ImportUrlModal({ open, onClose, onSaved }) {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://example.com/recipe"
-            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-pantry-slate"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
             autoFocus
           />
-          {error && <p className="text-sm text-paprika-red bg-paprika-red/10 px-3 py-2 rounded-xl">{error}</p>}
+          {error && <p className="text-sm text-alert bg-alert/10 px-3 py-2 rounded-xl">{error}</p>}
           <Button className="w-full" onClick={handleScrape} disabled={scraping || !url.trim()}>
             {scraping ? <Spinner /> : 'Preview'}
           </Button>

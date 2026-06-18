@@ -8,7 +8,7 @@ import RecentlySavedRow from './RecentlySavedRow';
 export default function Dashboard() {
   const { user } = useAuth();
   return (
-    <AppShell title="NourishPlan">
+    <AppShell title="DishQuest">
       <div className="px-4 py-6 space-y-6 md:px-8 md:py-8">
         <GreetingSection name={user?.name || user?.username} />
         <WeeklyPlanPreview />

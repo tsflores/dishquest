@@ -4,13 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        'pantry-slate': '#2F4858',
-        'pantry-white': '#FAFAF7',
-        'saffron-gold': '#F6AE2D',
-        'charcoal-slate': '#1F2933',
-        'muted-blue-gray': '#6B7280',
-        'herb-green': '#6A994E',
-        'paprika-red': '#D95D39',
+        primary: '#2F4858',
+        background: '#FAFAF7',
+        accent: '#F6AE2D',
+        ink: '#1F2933',
+        muted: '#6B7280',
+        success: '#6A994E',
+        alert: '#D95D39',
       },
       borderRadius: {
         card: '16px',

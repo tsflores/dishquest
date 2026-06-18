@@ -13,7 +13,7 @@ export default function SearchBar({ value, onChange, onSubmit, placeholder }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-white rounded-pill pl-9 pr-4 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-pantry-slate"
+        className="w-full bg-white rounded-pill pl-9 pr-4 py-2.5 text-sm border border-gray-200 focus:outline-none focus:border-primary"
       />
     </form>
   );

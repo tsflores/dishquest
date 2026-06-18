@@ -1,6 +1,6 @@
 {
-  "name": "NourishPlan",
-  "short_name": "NourishPlan",
+  "name": "DishQuest",
+  "short_name": "DishQuest",
   "description": "Your mobile-first meal planning companion",
   "start_url": "/",
   "display": "standalone",

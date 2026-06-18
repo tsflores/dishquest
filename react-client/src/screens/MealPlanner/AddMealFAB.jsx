@@ -30,7 +30,7 @@ export default function AddMealFAB({ day, onAdd }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-24 right-4 md:bottom-8 z-30 w-14 h-14 rounded-full bg-saffron-gold text-white text-3xl leading-none flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+        className="fixed bottom-24 right-4 md:bottom-8 z-30 w-14 h-14 rounded-full bg-accent text-white text-3xl leading-none flex items-center justify-center shadow-lg active:scale-95 transition-transform"
         aria-label={`Add meal for ${day}`}
       >
         +

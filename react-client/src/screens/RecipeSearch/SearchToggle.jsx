@@ -11,7 +11,7 @@ export default function SearchToggle({ value, onChange }) {
           key={mode.key}
           onClick={() => onChange(mode.key)}
           className={`flex-1 py-2 rounded-pill text-sm font-semibold transition-colors ${
-            value === mode.key ? 'bg-white text-pantry-slate shadow-sm' : 'text-gray-500'
+            value === mode.key ? 'bg-white text-primary shadow-sm' : 'text-gray-500'
           }`}
         >
           {mode.label}

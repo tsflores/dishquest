@@ -9,7 +9,7 @@ export default function WeekCalendarStrip({ selectedDay = 0, onSelectDay }) {
           onClick={() => onSelectDay?.(i)}
           className={`flex-shrink-0 flex flex-col items-center py-2 px-3 rounded-xl text-xs font-medium transition-colors ${
             selectedDay === i
-              ? 'bg-pantry-slate text-white'
+              ? 'bg-primary text-white'
               : 'bg-white text-gray-600 hover:bg-gray-50'
           }`}
         >
