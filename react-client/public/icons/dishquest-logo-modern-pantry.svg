@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 120" role="img" aria-labelledby="title desc">
+  <title id="title">DishQuest logo - Modern Pantry palette</title>
+  <desc id="desc">DishQuest wordmark with plate and fork icons using Deep Pantry Slate, Saffron Gold, Cool Recipe Blue, and Manrope typography.</desc>
+
+  <!-- Modern Pantry palette
+       Soft Pantry White: #FAFAF7
+       Deep Pantry Slate: #2F4858
+       Saffron Gold: #F6AE2D
+       Cool Recipe Blue: #86BBD8
+       Muted Blue Gray: #6B7280
+  -->
+
+  <!-- Optional app-background tone -->
+  <rect width="460" height="120" rx="18" fill="#FAFAF7"/>
+
+  <!-- Plate icon -->
+  <g aria-hidden="true" transform="translate(-60 0)">
+    <circle cx="100" cy="55" r="16" fill="#FFFFFF" stroke="#2F4858" stroke-width="2.5"/>
+    <circle cx="100" cy="55" r="9.5" fill="none" stroke="#86BBD8" stroke-width="2"/>
+    <path d="M90 55c2.8 4.4 7.2 6.2 10 6.2s7.2-1.8 10-6.2" fill="none" stroke="#F6AE2D" stroke-width="2.25" stroke-linecap="round"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="230" y="60" font-family="Manrope, Inter, Helvetica Neue, Arial, sans-serif" font-size="42" font-weight="800" text-anchor="middle" letter-spacing="-1.2">
+    <tspan fill="#2F4858">Dish</tspan><tspan fill="#F6AE2D">Quest</tspan>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="230" y="90" font-family="Manrope, Inter, Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="500" text-anchor="middle" letter-spacing="0.6" fill="#6B7280">
+    Food Discovery
+  </text>
+
+  <!-- Fork icon -->
+  <g aria-hidden="true" transform="translate(123 0)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M250 40v17c0 3.4 2.2 5.2 5 8" stroke="#2F4858" stroke-width="2.4"/>
+    <path d="M257 40v25" stroke="#2F4858" stroke-width="2.4"/>
+    <path d="M264 40v17c0 3.4-2.2 5.2-5 8" stroke="#2F4858" stroke-width="2.4"/>
+    <path d="M257 65v17" stroke="#86BBD8" stroke-width="2.4"/>
+    <circle cx="257" cy="84" r="2.7" fill="#F6AE2D" stroke="none"/>
+  </g>
+</svg>
