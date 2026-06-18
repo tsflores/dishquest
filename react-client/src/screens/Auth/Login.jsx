@@ -33,7 +33,7 @@ export default function Login() {
     <div className="min-h-dvh bg-background flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-[342px]">
         <div className="mb-8 text-center">
-          <img src="/icons/dishquest-logo-modern-pantry.svg" alt="DishQuest" className="h-16 mx-auto" />
+          <img src="/icons/dishquest-logo-modern-pantry-alt.svg" alt="DishQuest" className="h-16 mx-auto" />
           <p className="text-sm text-gray-400 mt-1">Your meal planning companion</p>
         </div>
 
