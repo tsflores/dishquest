@@ -1,6 +1,6 @@
 import CollectionHorizontalRow from '../../components/recipe/CollectionHorizontalRow';
 
-export default function CollectionGroup({ collection, onDelete }) {
+export default function CollectionGroup({ collection, onDelete, onRemoveRecipe }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
@@ -13,7 +13,10 @@ export default function CollectionGroup({ collection, onDelete }) {
           </button>
         )}
       </div>
-      <CollectionHorizontalRow recipes={collection.recipes} />
+      <CollectionHorizontalRow
+        recipes={collection.recipes}
+        onRemove={(entry) => onRemoveRecipe(collection, entry)}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Spinner from '../../components/ui/Spinner';
 import Toast from '../../components/ui/Toast';
 import CategorySection from './CategorySection';
 import StickyActionBar from './StickyActionBar';
+import AddItemModal from './AddItemModal';
 import { useGroceryList } from '../../hooks/useGroceryList';
 import { useMealPlan } from '../../hooks/useMealPlan';
 import { groceryListService } from '../../services/groceryListService';
@@ -17,6 +18,7 @@ export default function GroceryList() {
   const { plans } = useMealPlan(weekStartISO);
   const [generating, setGenerating] = useState(false);
   const [toast, setToast] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const list = lists[0] || null;
   const plan = plans[0] || null;
@@ -46,9 +48,28 @@ export default function GroceryList() {
     reload();
   };
 
+  const handleAddItem = async (item) => {
+    let listId = list?._id;
+    if (!listId) {
+      const created = await groceryListService.create('Grocery List');
+      listId = created._id;
+    }
+    await groceryListService.addItem(listId, item);
+    reload();
+    setToast('Item added');
+  };
+
+  const handleClear = async () => {
+    if (!list) return;
+    if (!window.confirm('Clear this grocery list? This can\'t be undone.')) return;
+    await groceryListService.delete(list._id);
+    reload();
+    setToast('Grocery list cleared');
+  };
+
   return (
     <AppShell title="Grocery List">
-      <div className="px-4 py-6 pb-32 space-y-5 md:px-8 md:py-8">
+      <div className="px-4 py-6 pb-44 space-y-5 md:px-8 md:py-8">
         {loading ? (
           <div className="flex justify-center py-10">
             <Spinner className="text-primary w-8 h-8" />
@@ -56,11 +77,11 @@ export default function GroceryList() {
         ) : !list ? (
           <p className="text-sm text-gray-400 text-center py-10">
             {hasMeals
-              ? "You don't have a grocery list yet — generate one from this week's meal plan."
-              : 'Plan some meals first, then generate a grocery list from them.'}
+              ? "You don't have a grocery list yet — generate one from this week's meal plan, or add items below."
+              : 'Plan some meals to generate a list automatically, or add items below.'}
           </p>
         ) : list.items.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-10">Your grocery list is empty.</p>
+          <p className="text-sm text-gray-400 text-center py-10">Your grocery list is empty. Add an item below.</p>
         ) : (
           <>
             <h3 className="text-sm font-semibold text-gray-900">{list.title}</h3>
@@ -74,7 +95,15 @@ export default function GroceryList() {
           </>
         )}
       </div>
-      <StickyActionBar onGenerate={handleGenerate} generating={generating} disabled={!hasMeals} />
+      <StickyActionBar
+        onGenerate={handleGenerate}
+        generating={generating}
+        disabled={!hasMeals}
+        onAddItem={() => setAddOpen(true)}
+        onClear={handleClear}
+        hasList={!!list}
+      />
+      <AddItemModal open={addOpen} onClose={() => setAddOpen(false)} onAdd={handleAddItem} />
       <Toast message={toast} onDismiss={() => setToast(null)} />
     </AppShell>
   );

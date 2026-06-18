@@ -1,6 +1,7 @@
 import Button from '../../components/ui/Button';
+import Spinner from '../../components/ui/Spinner';
 
-export default function InstructionsTab({ recipe, source }) {
+export default function InstructionsTab({ recipe, source, loading }) {
   if (source === 'internal') {
     return (
       <div className="text-center py-6">
@@ -23,6 +24,15 @@ export default function InstructionsTab({ recipe, source }) {
           </li>
         ))}
       </ol>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="text-center py-6 space-y-2">
+        <Spinner className="text-primary w-6 h-6 mx-auto" />
+        <p className="text-sm text-gray-400">Looking for full instructions…</p>
+      </div>
     );
   }
 

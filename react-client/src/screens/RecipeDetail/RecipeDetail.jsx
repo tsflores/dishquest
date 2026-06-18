@@ -11,6 +11,7 @@ import IngredientsTab from './IngredientsTab';
 import InstructionsTab from './InstructionsTab';
 import { recipeService } from '../../services/recipeService';
 import { externalRecipeService } from '../../services/externalRecipeService';
+import { scrapeService } from '../../services/scrapeService';
 
 const TAB_COMPONENTS = {
   overview: OverviewTab,
@@ -27,6 +28,7 @@ export default function RecipeDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tab, setTab] = useState('overview');
+  const [scrapingInstructions, setScrapingInstructions] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -55,6 +57,29 @@ export default function RecipeDetail() {
       .finally(() => setLoading(false));
   }, [id, isExternal, location.state]);
 
+  // Edamam search results have no step-by-step instructions in their API response
+  // (only ingredient lines) — backfill them by scraping the original source page,
+  // the same way the URL-import flow does. Also picks up a real Mongo _id so
+  // Save to Collection / Add to Meal Plan don't need a separate persist step.
+  useEffect(() => {
+    if (!isExternal || !recipe?.sourceUrl || recipe.instructions?.length) return;
+    let cancelled = false;
+    setScrapingInstructions(true);
+    scrapeService.scrape(recipe.sourceUrl)
+      .then((scraped) => {
+        if (cancelled) return;
+        setRecipe((prev) => ({
+          ...prev,
+          _id: scraped._id,
+          instructions: scraped.instructions?.length ? scraped.instructions : prev.instructions,
+          ingredients: prev.ingredients?.length ? prev.ingredients : scraped.ingredients,
+        }));
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setScrapingInstructions(false); });
+    return () => { cancelled = true; };
+  }, [isExternal, recipe?.sourceUrl, recipe?.instructions?.length]);
+
   const source = isExternal ? 'external' : 'internal';
   const TabComponent = TAB_COMPONENTS[tab];
 
@@ -77,7 +102,7 @@ export default function RecipeDetail() {
             <div className="md:hidden">
               <DetailTabs active={tab} onChange={setTab} />
               <div className="py-4">
-                <TabComponent recipe={recipe} source={source} />
+                <TabComponent recipe={recipe} source={source} loading={tab === 'instructions' && scrapingInstructions} />
               </div>
             </div>
 
@@ -93,7 +118,7 @@ export default function RecipeDetail() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 mb-2">Instructions</h3>
-                <InstructionsTab recipe={recipe} source={source} />
+                <InstructionsTab recipe={recipe} source={source} loading={scrapingInstructions} />
               </div>
             </div>
           </div>

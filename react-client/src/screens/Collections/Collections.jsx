@@ -22,6 +22,12 @@ export default function Collections() {
     reload();
   };
 
+  const handleRemoveRecipe = async (collection, entry) => {
+    if (!window.confirm(`Remove "${entry.recipeName}" from ${collection.name}?`)) return;
+    await collectionService.removeRecipe(collection._id, entry.recipeId);
+    reload();
+  };
+
   return (
     <AppShell title="Collections">
       <div className="px-4 py-6 space-y-5 md:px-8 md:py-8">
@@ -45,7 +51,12 @@ export default function Collections() {
         ) : (
           <div className="space-y-6">
             {visible.map((c) => (
-              <CollectionGroup key={c._id} collection={c} onDelete={handleDelete} />
+              <CollectionGroup
+                key={c._id}
+                collection={c}
+                onDelete={handleDelete}
+                onRemoveRecipe={handleRemoveRecipe}
+              />
             ))}
           </div>
         )}

@@ -14,6 +14,15 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.post('/', async (req, res) => {
+  try {
+    const list = await GroceryListService.create(req.user.id, req.body.title);
+    res.status(201).json(list);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const list = await GroceryListService.find(req.params.id, req.user.id);

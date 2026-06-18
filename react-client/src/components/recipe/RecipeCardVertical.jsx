@@ -35,6 +35,9 @@ export default function RecipeCardVertical({ recipe, source = 'internal' }) {
       </div>
       <div className="p-3">
         <p className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug">{label}</p>
+        {source === 'external' && recipe.sourceDomain && (
+          <p className="text-xs text-gray-400 mt-0.5 truncate">{recipe.sourceDomain}</p>
+        )}
       </div>
     </div>
   );
