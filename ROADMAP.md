@@ -84,17 +84,17 @@ Phases 1, 2, and 3 are complete. This file tracks what's left.
 
 ---
 
-## Phase 6 — PWA + Polish
+## Phase 6 — PWA + Polish (complete)
 
-- [ ] Create `public/icons/icon-192.png` and `public/icons/icon-512.png`
-- [ ] Implement full service worker caching strategy in `public/sw.js`:
+- [x] Create `public/icons/icon-192.png` and `public/icons/icon-512.png` — rasterized from a new `icon.svg` (forest-green bg + the prototype's leaf/sprout mark) via ImageMagick
+- [x] Implement full service worker caching strategy in `public/sw.js`:
   - App shell (HTML/JS/CSS/fonts): **Cache-first**, precache URLs injected at build
   - `/static/images/*`: **Stale-while-revalidate**
   - `/api/recipes/*`: **Network-first** with cache fallback (enables offline recipe viewing)
   - `/api/edamam/search*`: **Network-only**
   - POST / PUT / DELETE: **Pass-through**, never cached
-- [ ] Wire `src/scripts/inject-sw-precache.js` as `"postbuild"` script in `package.json`
-- [ ] Run Lighthouse PWA audit in Chrome — verify installable + service worker registered
+- [x] Wire `src/scripts/inject-sw-precache.js` as `"postbuild"` script in `package.json`
+- [x] Verify installable + service worker registered — Lighthouse CLI 13.4.0 has no PWA category/audits anymore, so verified manually via Playwright instead: SW controls the page after first load, manifest is valid, all three caches populate correctly, and the app fully renders offline (app shell + cached `/api/recipes` data) on reload
 
 ---
 

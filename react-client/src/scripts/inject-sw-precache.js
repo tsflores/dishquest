@@ -9,16 +9,17 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '../..');
 
 const manifest = JSON.parse(readFileSync(resolve(root, 'dist/.vite/manifest.json'), 'utf8'));
-const urls = Object.values(manifest)
-  .map((entry) => entry.file)
-  .filter(Boolean)
-  .map((f) => `/${f}`);
+const urls = new Set(['/manifest.json']);
+for (const entry of Object.values(manifest)) {
+  if (entry.file) urls.add(`/${entry.file}`);
+  (entry.css || []).forEach((f) => urls.add(`/${f}`));
+}
 
 const swPath = resolve(root, 'dist/sw.js');
 let sw = readFileSync(swPath, 'utf8');
 sw = sw.replace(
   'const PRECACHE_URLS = [];',
-  `const PRECACHE_URLS = ${JSON.stringify(urls, null, 2)};`
+  `const PRECACHE_URLS = ${JSON.stringify(Array.from(urls), null, 2)};`
 );
 writeFileSync(swPath, sw);
-console.log(`Injected ${urls.length} URLs into sw.js`);
+console.log(`Injected ${urls.size} URLs into sw.js`);

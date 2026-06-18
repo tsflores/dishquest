@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "node src/scripts/inject-sw-precache.js",
     "preview": "vite preview"
   },
   "dependencies": {

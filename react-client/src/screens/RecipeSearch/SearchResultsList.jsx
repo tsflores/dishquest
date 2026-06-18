@@ -1,7 +1,8 @@
 import Spinner from '../../components/ui/Spinner';
+import Button from '../../components/ui/Button';
 import RecipeCardVertical from '../../components/recipe/RecipeCardVertical';
 
-export default function SearchResultsList({ results, loading, error, searched, mode }) {
+export default function SearchResultsList({ results, loading, error, searched, mode, hasMore, loadingMore, onLoadMore }) {
   if (loading) {
     return (
       <div className="flex justify-center py-10">
@@ -27,10 +28,19 @@ export default function SearchResultsList({ results, loading, error, searched, m
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 px-4 pb-6 md:px-8">
-      {results.map(({ recipe, source }) => (
-        <RecipeCardVertical key={source === 'external' ? recipe.id : recipe._id} recipe={recipe} source={source} />
-      ))}
+    <div className="px-4 pb-6 md:px-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {results.map(({ recipe, source }, i) => (
+          <RecipeCardVertical key={source === 'external' ? `${recipe.id}-${i}` : recipe._id} recipe={recipe} source={source} />
+        ))}
+      </div>
+      {hasMore && (
+        <div className="flex justify-center pt-4">
+          <Button variant="outline" onClick={onLoadMore} disabled={loadingMore}>
+            {loadingMore ? <Spinner className="w-4 h-4" /> : 'Load More'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

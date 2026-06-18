@@ -16,9 +16,11 @@ export default function RecipeSearch() {
   const [diet, setDiet] = useState(null);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
   const [inAppMeals, setInAppMeals] = useState([]);
+  const [nextCont, setNextCont] = useState(null);
 
   // The 64 existing recipes use free-text lowercase `meal` values (e.g. "dinner",
   // "appetizer") that don't match Edamam's capitalized mealType vocabulary, so
@@ -38,6 +40,7 @@ export default function RecipeSearch() {
     setLoading(true);
     setError(null);
     setSearched(true);
+    setNextCont(null);
     try {
       if (mode === 'inapp') {
         const params = {};
@@ -53,6 +56,7 @@ export default function RecipeSearch() {
         const data = await edamamService.search(params);
         const hits = data.hits || [];
         setResults(hits.map((hit) => ({ recipe: normalizeEdamamHit(hit), source: 'external' })));
+        setNextCont(data.nextCont || null);
       }
     } catch (e) {
       setError(e.message);
@@ -61,6 +65,25 @@ export default function RecipeSearch() {
       setLoading(false);
     }
   }, [mode, query, mealType, cuisineType, diet]);
+
+  const loadMore = useCallback(async () => {
+    if (!nextCont || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const params = { q: query.trim(), cont: nextCont };
+      if (cuisineType) params.cuisineType = cuisineType;
+      if (diet) params.diet = diet;
+      if (mealType) params.mealType = mealType;
+      const data = await edamamService.search(params);
+      const hits = data.hits || [];
+      setResults((prev) => [...prev, ...hits.map((hit) => ({ recipe: normalizeEdamamHit(hit), source: 'external' }))]);
+      setNextCont(data.nextCont || null);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [query, mealType, cuisineType, diet, nextCont, loadingMore]);
 
   // In-app browsing reacts live to the meal filter and loads everything on mount;
   // web search requires a query, so it only runs on explicit submit.
@@ -74,7 +97,7 @@ export default function RecipeSearch() {
       <div className="px-4 pt-4 space-y-3 md:px-8">
         <SearchToggle
           value={mode}
-          onChange={(m) => { setMode(m); setMealType(null); setResults([]); setSearched(false); setError(null); }}
+          onChange={(m) => { setMode(m); setMealType(null); setResults([]); setSearched(false); setError(null); setNextCont(null); }}
         />
         <SearchBar
           value={query}
@@ -93,7 +116,16 @@ export default function RecipeSearch() {
         />
       </div>
       <div className="mt-4">
-        <SearchResultsList results={results} loading={loading} error={error} searched={searched} mode={mode} />
+        <SearchResultsList
+          results={results}
+          loading={loading}
+          error={error}
+          searched={searched}
+          mode={mode}
+          hasMore={mode === 'web' && !!nextCont}
+          loadingMore={loadingMore}
+          onLoadMore={loadMore}
+        />
       </div>
     </AppShell>
   );
