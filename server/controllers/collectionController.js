@@ -1,4 +1,5 @@
 const Collection = require('../models/collectionModel');
+const ExternalRecipeService = require('./externalRecipeController');
 
 class CollectionService {
   static async listForUser(userID) {
@@ -34,7 +35,12 @@ class CollectionService {
     const collection = await Collection.findOne({ _id: id, userID });
     if (!collection) return null;
     if (collection.isDefault) throw new Error('Cannot delete the Favorites collection');
-    return Collection.findOneAndDelete({ _id: id, userID });
+    const externalIds = collection.recipes
+      .filter((r) => r.recipeSource === 'external')
+      .map((r) => r.recipeId);
+    const deleted = await Collection.findOneAndDelete({ _id: id, userID });
+    for (const recipeId of externalIds) await ExternalRecipeService.deleteIfOrphaned(recipeId);
+    return deleted;
   }
 
   static async addRecipe(id, userID, recipeEntry) {
@@ -54,8 +60,13 @@ class CollectionService {
   static async removeRecipe(id, userID, recipeId) {
     const collection = await Collection.findOne({ _id: id, userID });
     if (!collection) return null;
+    const removed = collection.recipes.find((r) => r.recipeId.toString() === recipeId);
     collection.recipes = collection.recipes.filter((r) => r.recipeId.toString() !== recipeId);
-    return collection.save();
+    await collection.save();
+    if (removed?.recipeSource === 'external') {
+      await ExternalRecipeService.deleteIfOrphaned(removed.recipeId);
+    }
+    return collection;
   }
 }
 
