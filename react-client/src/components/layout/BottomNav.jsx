@@ -43,7 +43,7 @@ export default function BottomNav() {
           end={tab.to === '/'}
           className={({ isActive }) =>
             `flex-1 md:flex-none flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
-              isActive ? 'text-forest-green' : 'text-gray-400'
+              isActive ? 'text-pantry-slate' : 'text-gray-400'
             }`
           }
         >

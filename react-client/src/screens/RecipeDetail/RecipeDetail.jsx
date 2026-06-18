@@ -62,10 +62,10 @@ export default function RecipeDetail() {
     <AppShell title={recipe?.name || 'Recipe'} back hideNav>
       {loading ? (
         <div className="flex justify-center py-16">
-          <Spinner className="text-forest-green w-8 h-8" />
+          <Spinner className="text-pantry-slate w-8 h-8" />
         </div>
       ) : error ? (
-        <p className="px-4 py-10 text-sm text-red-500 text-center">{error}</p>
+        <p className="px-4 py-10 text-sm text-paprika-red text-center">{error}</p>
       ) : recipe ? (
         <div>
           <HeroImage image={recipe.image} alt={recipe.name} />

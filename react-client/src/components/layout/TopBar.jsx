@@ -12,7 +12,7 @@ export default function TopBar({ title, back, action, offsetSidebar = true }) {
         {back && (
           <button
             onClick={() => navigate(-1)}
-            className="text-forest-green text-xl leading-none"
+            className="text-pantry-slate text-xl leading-none"
             aria-label="Go back"
           >
             ‹

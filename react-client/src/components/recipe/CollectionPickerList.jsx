@@ -26,7 +26,7 @@ export default function CollectionPickerList({ onPick }) {
     <div className="space-y-3">
       {loading ? (
         <div className="flex justify-center py-6">
-          <Spinner className="text-forest-green" />
+          <Spinner className="text-pantry-slate" />
         </div>
       ) : (
         <div className="space-y-2 max-h-[40vh] overflow-y-auto">
@@ -46,7 +46,7 @@ export default function CollectionPickerList({ onPick }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="New collection name"
-          className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-forest-green"
+          className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-pantry-slate"
         />
         <Button variant="outline" onClick={handleCreate} disabled={creating || !name.trim()}>
           {creating ? <Spinner /> : 'Create'}

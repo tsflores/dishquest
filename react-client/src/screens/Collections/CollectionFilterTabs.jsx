@@ -41,7 +41,7 @@ export default function CollectionFilterTabs({ collections, active, onChange, on
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Collection name"
-            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-forest-green"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-pantry-slate"
             autoFocus
           />
           <Button className="w-full" onClick={handleCreate} disabled={creating || !name.trim()}>

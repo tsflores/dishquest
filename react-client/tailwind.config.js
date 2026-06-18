@@ -4,16 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        'forest-green': '#2D6A4F',
-        'warm-cream': '#FAF3E0',
-        'coral-orange': '#E76F51',
+        'pantry-slate': '#2F4858',
+        'pantry-white': '#FAFAF7',
+        'saffron-gold': '#F6AE2D',
+        'charcoal-slate': '#1F2933',
+        'muted-blue-gray': '#6B7280',
+        'herb-green': '#6A994E',
+        'paprika-red': '#D95D39',
       },
       borderRadius: {
         card: '16px',
         pill: '24px',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Manrope', 'Inter', 'sans-serif'],
       },
     },
   },

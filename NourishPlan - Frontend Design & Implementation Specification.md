@@ -10,27 +10,25 @@ This document provides a comprehensive design specification for the **NourishPla
 
 | Usage | Color Name | Hex Code | Description |
 |---|---|---|---|
-| **Primary Brand** | Forest Green | `#2D6A4F` | Used for headers, active states, primary buttons, icons, and emphasized text. |
-| **Background** | Warm Cream | `#FAF3E0` | Global app background color. Provides a warm, food-friendly aesthetic. |
-| **Accent / Action** | Coral Orange | `#E76F51` | Used for high-emphasis actions (e.g., "Generate Grocery List"), favorite/heart icons, and alert/delete states. |
+| **Primary Brand** | Deep Pantry Slate | `#2F4858` | Used for headers, active states, primary buttons, icons, and emphasized text. |
+| **Background** | Soft Pantry White | `#FAFAF7` | Global app background color. Provides a warm, food-friendly aesthetic. |
+| **Accent / Action** | Saffron Gold | `#F6AE2D` | Used for high-emphasis actions (e.g., "Generate Grocery List"), favorite/heart icons, and alert/delete states. |
 | **Surface / Card** | Pure White | `#FFFFFF` | Used for recipe cards, bottom sheets, and modal backgrounds to create contrast against the cream background. |
-| **Text - Primary** | Dark Charcoal | `#1A1A1A` | Used for primary headings, recipe titles, and main body copy. |
-| **Text - Secondary**| Muted Gray | `#666666` | Used for subtitles, meta-data (time, calories), placeholder text, and inactive states. |
+| **Text - Primary** | Charcoal Slate | `#1F2933` | Used for primary headings, recipe titles, and main body copy. |
+| **Text - Secondary**| Muted Blue Gray | `#6B7280` | Used for subtitles, meta-data (time, calories), placeholder text, and inactive states. |
 | **Border / Divider**| Light Gray | `#E0E0E0` | Used for subtle borders, dividers between list items, and inactive tab underlines. |
-| **Success** | Leaf Green | `#4CAF50` | Used for checkmarks, progress bars, and positive states. |
-| **Category - Produce**| Deep Green | `#2D6A4F` | Left border color for Produce category in Grocery List. |
-| **Category - Dairy** | Mustard Yellow| `#F4A261` | Left border color for Dairy & Eggs category in Grocery List. |
-| **Category - Pantry**| Earth Brown | `#A0522D` | Left border color for Pantry category in Grocery List. |
-| **Category - Meat** | Brick Red | `#C1121F` | Left border color for Meat & Seafood category in Grocery List. |
+| **Success** | Pantry Herb Green | `#6A994E` | Used for checkmarks, progress bars, and positive states. |
+| **Alert / Delete**| Soft Paprika Red | `#D95D39` | Used for destructive actions, alerts, missing ingredients, or warning states. Warmer than a standard red and better aligned with the food theme. |
 
 ### 1.2 Typography
 
-The application uses a clean, modern sans-serif stack. 
+The application uses a clean, modern sans-serif stack with a polished, utility-focused feel.
 
-*   **Primary Font Family:** `Inter`, `Helvetica Neue`, `Arial`, sans-serif
-*   **Headings (H1, H2):** Semi-Bold or Bold, Dark Charcoal or Forest Green.
-*   **Body Text:** Regular, Dark Charcoal.
-*   **Meta Text (Small):** Regular, Muted Gray.
+* **Primary Font Family:** `Manrope`, `Inter`, `Helvetica Neue`, `Arial`, sans-serif
+* **Headings (H1, H2):** Semi-Bold or Bold, Deep Pantry Slate `#2F4858`.
+* **Body Text:** Regular, Charcoal Slate `#1F2933`.
+* **Meta Text (Small):** Regular or Medium, Muted Blue Gray `#6B7280`.
+* **Buttons / Labels:** Semi-Bold, Deep Pantry Slate `#2F4858` or Soft Pantry White `#FAFAF7`, depending on background contrast.
 
 **Typography Scale:**
 *   **App Title / Hero Header:** 28px - 32px, Bold

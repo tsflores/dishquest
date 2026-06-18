@@ -14,7 +14,7 @@ export default function RecommendedGrid() {
   if (loading) {
     return (
       <div className="flex justify-center py-6">
-        <Spinner className="text-forest-green" />
+        <Spinner className="text-pantry-slate" />
       </div>
     );
   }

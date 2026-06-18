@@ -27,7 +27,7 @@ export default function OverviewTab({ recipe, source }) {
           href={recipe.sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className="block text-center text-forest-green text-sm font-semibold underline"
+          className="block text-center text-pantry-slate text-sm font-semibold underline"
         >
           View original recipe ↗
         </a>

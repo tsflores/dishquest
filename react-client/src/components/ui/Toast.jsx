@@ -10,8 +10,8 @@ export default function Toast({ message, type = 'success', onDismiss, duration =
   if (!message) return null;
 
   const colors = {
-    success: 'bg-forest-green text-white',
-    error: 'bg-red-500 text-white',
+    success: 'bg-herb-green text-white',
+    error: 'bg-paprika-red text-white',
     info: 'bg-gray-800 text-white',
   };
 

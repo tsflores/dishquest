@@ -16,7 +16,7 @@ export default function InstructionsTab({ recipe, source }) {
       <ol className="space-y-3">
         {recipe.instructions.map((step, i) => (
           <li key={i} className="flex gap-3 text-sm text-gray-700">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-forest-green text-white text-xs font-bold flex items-center justify-center">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-pantry-slate text-white text-xs font-bold flex items-center justify-center">
               {i + 1}
             </span>
             <p className="leading-relaxed">{step}</p>

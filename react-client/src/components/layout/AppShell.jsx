@@ -3,7 +3,7 @@ import BottomNav from './BottomNav';
 
 export default function AppShell({ title, back, action, children, hideNav = false }) {
   return (
-    <div className="min-h-dvh bg-warm-cream">
+    <div className="min-h-dvh bg-pantry-white">
       {!hideNav && <BottomNav />}
       <TopBar title={title} back={back} action={action} offsetSidebar={!hideNav} />
       <main className={`pt-14 ${hideNav ? 'pb-6' : 'pb-20 md:pb-8 md:pl-20'}`}>
