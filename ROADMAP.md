@@ -101,17 +101,19 @@ Phases 1, 2, and 3 are complete. This file tracks what's left.
 ## Phase 7 — Production Deployment + Cleanup
 
 ### Prep
-- [ ] Create `ecosystem.config.js` at repo root (see plan file for full config)
+- [x] Create `ecosystem.config.js` at repo root — named `dishquest` (matches the existing pm2 process being replaced and `server/package.json`'s name), `cwd` set to `server/` so `dotenv` still finds `server/.env` (it resolves relative to `process.cwd()`, not the script's location), log paths built from `__dirname` so they always land in `<repo root>/logs/` regardless of where `pm2 start` is run from. Smoke-tested locally with a real `pm2 start` — DB connected, server listened on 3000, `/api/recipes` returned 200, logs landed correctly.
 
 ### Droplet deploy sequence
 ```bash
 git fetch && git checkout nourish-plan
 cd server && npm install
 cd ../react-client && npm install && npm run build
+cd ..
 pm2 stop dishquest && pm2 delete dishquest
 pm2 start ecosystem.config.js --env production
 pm2 save
 ```
+**Note:** the original version of this sequence was missing the `cd ..` after the react-client build — without it you're still inside `react-client/` when the `pm2` commands run, and `ecosystem.config.js` (at repo root) won't be found.
 
 ### Verify
 - [ ] HTTPS resolves at `https://recipe-collection.trinidads-portfolio.com/`
