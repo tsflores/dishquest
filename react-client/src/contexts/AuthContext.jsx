@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState, useCallback, useEffect } from 'react';
 import { decodeJWT } from '../utils/decodeJWT';
 
 export const AuthContext = createContext(null);
@@ -34,6 +34,16 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     setUser(null);
+  }, []);
+
+  // apiFetch (services/api.js) clears the token and fires this when any
+  // request comes back 401 (expired/invalid token) — without it, the app
+  // had no way to notice and would just leave a raw server error sitting
+  // in whatever component happened to be active.
+  useEffect(() => {
+    const handleUnauthorized = () => setUser(null);
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
   }, []);
 
   return (

@@ -110,6 +110,14 @@ The one existing live MealPlan document (6 slots) needed no data migration — i
 
 ---
 
+## Out-of-plan: Expired-token requests left a raw error on screen instead of logging out (2026-06-19)
+
+User hit "Invalid or expired token" while importing a recipe URL. JWTs expire after 24h by design — the bug was that nothing on the client noticed. `hooks/useApi.js` was built in Phase 2 to catch 401s and log out, but it was never actually imported anywhere; every service calls `apiFetch` directly, which just threw the server's raw error string for whatever component was active to display.
+
+Fix: `apiFetch` (`services/api.js`) now clears the token and fires a `window` `'auth:unauthorized'` event on any 401. `AuthContext.jsx` listens for it and clears `user`, which `ProtectedRoute.jsx` already turns into a redirect to `/login` — no new routing needed. Deleted the dead `useApi.js`. Verified via Playwright: a token that expires mid-session now bounces the in-progress action (URL import) straight to `/login` instead of leaving the raw error in the modal.
+
+---
+
 ## Phase 7 — Production Deployment + Cleanup
 
 ### Prep

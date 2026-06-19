@@ -10,6 +10,10 @@ export async function apiFetch(path, options = {}) {
     ...options.headers,
   };
   const res = await fetch(path, { ...options, headers });
+  if (res.status === 401) {
+    localStorage.removeItem('token');
+    window.dispatchEvent(new Event('auth:unauthorized'));
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `Request failed: ${res.status}`);
