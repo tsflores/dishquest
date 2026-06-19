@@ -74,7 +74,7 @@ app.use('/api/scrape', scrapeRoutes);
 app.use('/api/external-recipes', externalRecipeRoutes);
 
 app.use('/', (req, res) => {
-   const pattern = new RegExp('(.css|.html|.js|.ico|.jpg|.png|.webp|.svg)+\/?$', 'gi');
+   const pattern = new RegExp('(.css|.html|.js|.json|.ico|.jpg|.png|.webp|.svg)+\/?$', 'gi');
    if (pattern.test(req.url)) {
       const url = req.url.replace(/\/$/, "");
       res.sendFile(path.resolve(__dirname, `../react-client/dist/${url}`));

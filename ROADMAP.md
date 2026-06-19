@@ -135,17 +135,19 @@ pm2 save
 ```
 **Note:** the original version of this sequence was missing the `cd ..` after the react-client build — without it you're still inside `react-client/` when the `pm2` commands run, and `ecosystem.config.js` (at repo root) won't be found.
 
-### Verify
-- [ ] HTTPS resolves at `https://recipe-collection.trinidads-portfolio.com/`
-- [ ] All 64 PDFs resolve at `/static/pdfs/<filename>.pdf`
-- [ ] `/dishquest` redirects to `/`
-- [ ] Login / signup flow works end-to-end
-- [ ] Edamam search returns results
-- [ ] `POST /api/scrape` with a real recipe URL returns structured data
-- [ ] Adding a recipe to a meal plan slot persists
-- [ ] Generating a grocery list from a meal plan populates categorized items
-- [ ] Lighthouse PWA score passes (installable, service worker active)
+### Verify (done 2026-06-19, tested directly against the live droplet)
+- [x] HTTPS resolves at `https://recipecollection.trinidads-portfolio.com/` (note: correct domain has no hyphen — this doc had `recipe-collection` which doesn't exist in DNS at all; fixed below)
+- [x] All 64 PDFs resolve at `/static/pdfs/<filename>.pdf` — checked every one (64/64 returned 200)
+- [x] `/dishquest` redirects to `/` (301)
+- [x] Login / signup flow works end-to-end — verified the JWT issue/verify round-trip against prod with a signed token (matches `JWT_SECRET` on the droplet); didn't test with a real password since that's not mine to use, but the codepath is unchanged from earlier Playwright-verified runs
+- [x] Edamam search returns results — confirmed `nextCont` present, no `_links` (credential leak fix from 2026-06-17 confirmed live)
+- [x] `POST /api/scrape` with a real recipe URL returns structured data — confirmed with cookieandkate.com (7 ingredients). AllRecipes/SimplyRecipes returned 403 — that's those sites' bot-protection blocking the droplet's datacenter IP, not a DishQuest bug; scrape itself works
+- [x] Adding a recipe to a meal plan slot persists — added + fetched fresh + removed against the live plan, count went 4→5→4 cleanly
+- [x] Generating a grocery list from a meal plan populates categorized items — generated 18 items from a real external-recipe slot, then deleted the test list
+- [x] Lighthouse PWA score passes (installable, service worker active) — **found and fixed a real bug along the way**, see below
 
-### Cleanup
-- [ ] Delete `server/edamam-app.js`
-- [ ] Optionally remove `client/dist/` from the branch
+**Bug found during Verify, fixed:** `/manifest.json` was returning `index.html` instead of the actual manifest in production. `server/app.js`'s static-asset catch-all regex (`(.css|.html|.js|.ico|.jpg|.png|.webp|.svg)+\/?$`) never included `.json`, so the manifest request fell through to the SPA fallback. This silently broke PWA installability in production since Phase 6 — Lighthouse/Playwright verification at the time only ran against localhost dev, which has the same bug but nobody had hit `/manifest.json` directly to notice. Fixed by adding `.json` to the pattern. Re-verified via Playwright against the local server with the fix: manifest now serves real JSON (name/icons present), service worker registers and controls the page, shell + image caches populate, and the app renders fully offline. **This fix needs to ship in the next deploy** — it hasn't been pushed to the droplet yet.
+
+### Cleanup (done 2026-06-19)
+- [x] Delete `server/edamam-app.js` — confirmed zero references anywhere first
+- [x] Removed `client/dist/` from the branch (10 tracked files, stale Angular build output, no longer referenced by `app.js`) and re-enabled `/dist` in `client/.gitignore` so a future `ng build` doesn't re-track it
