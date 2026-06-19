@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { mealPlanService } from '../services/mealPlanService';
 
-export function useMealPlan(weekStart) {
+export function useMealPlan() {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -9,11 +9,11 @@ export function useMealPlan(weekStart) {
   const load = useCallback(() => {
     setLoading(true);
     setError(null);
-    mealPlanService.list(weekStart)
+    mealPlanService.list()
       .then(setPlans)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, [weekStart]);
+  }, []);
 
   useEffect(() => { load(); }, [load]);
 

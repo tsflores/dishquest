@@ -1,16 +1,13 @@
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import CollectionHorizontalRow from '../../components/recipe/CollectionHorizontalRow';
 import Spinner from '../../components/ui/Spinner';
 import { useMealPlan } from '../../hooks/useMealPlan';
-import { getMondayISO } from '../../utils/weekDates';
 import { WEEK_DAYS } from '../../utils/constants';
 
 const MEAL_ORDER = ['breakfast', 'lunch', 'dinner', 'snack'];
 
 export default function WeeklyPlanPreview() {
-  const weekStartISO = useMemo(() => getMondayISO(), []);
-  const { plans, loading } = useMealPlan(weekStartISO);
+  const { plans, loading } = useMealPlan();
 
   const plan = plans[0] || null;
   const slots = [...(plan?.slots || [])].sort((a, b) => {
@@ -21,7 +18,7 @@ export default function WeeklyPlanPreview() {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold text-gray-900">This week's plan</h3>
+        <h3 className="text-sm font-semibold text-gray-900">Your meal plan</h3>
         <Link to="/planner" className="text-xs font-medium text-primary">View full plan</Link>
       </div>
       {loading ? (

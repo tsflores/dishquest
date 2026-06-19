@@ -7,7 +7,7 @@ router.use(verifyToken);
 
 router.get('/', async (req, res) => {
   try {
-    const plans = await MealPlanService.listForUser(req.user.id, req.query.weekStart);
+    const plans = await MealPlanService.listForUser(req.user.id);
     res.json(plans);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -26,9 +26,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { weekStart } = req.body;
-    if (!weekStart) return res.status(400).json({ error: 'weekStart is required' });
-    const plan = await MealPlanService.create(req.user.id, weekStart);
+    const plan = await MealPlanService.create(req.user.id);
     res.status(201).json(plan);
   } catch (err) {
     res.status(500).json({ error: err.message });

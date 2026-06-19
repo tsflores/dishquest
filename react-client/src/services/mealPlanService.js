@@ -1,11 +1,9 @@
 import { apiFetch } from './api';
 
 export const mealPlanService = {
-  list: (weekStart) =>
-    apiFetch(`/api/meal-plans${weekStart ? `?weekStart=${weekStart}` : ''}`),
+  list: () => apiFetch('/api/meal-plans'),
   get: (id) => apiFetch(`/api/meal-plans/${id}`),
-  create: (weekStart) =>
-    apiFetch('/api/meal-plans', { method: 'POST', body: JSON.stringify({ weekStart }) }),
+  create: () => apiFetch('/api/meal-plans', { method: 'POST' }),
   delete: (id) => apiFetch(`/api/meal-plans/${id}`, { method: 'DELETE' }),
   addSlot: (id, slot) =>
     apiFetch(`/api/meal-plans/${id}/slots`, { method: 'POST', body: JSON.stringify(slot) }),

@@ -6,7 +6,6 @@ import AddToPlanModal from '../../components/recipe/AddToPlanModal';
 import { collectionService } from '../../services/collectionService';
 import { externalRecipeService } from '../../services/externalRecipeService';
 import { mealPlanService } from '../../services/mealPlanService';
-import { getMondayISO } from '../../utils/weekDates';
 
 export default function ActionButtons({ recipe, source }) {
   const [toast, setToast] = useState(null);
@@ -57,7 +56,7 @@ export default function ActionButtons({ recipe, source }) {
     setSaving(true);
     try {
       const recipeId = source === 'external' ? await resolveRecipeId() : recipe._id;
-      const plan = await mealPlanService.create(getMondayISO());
+      const plan = await mealPlanService.create();
       await mealPlanService.addSlot(plan._id, {
         day,
         mealType,

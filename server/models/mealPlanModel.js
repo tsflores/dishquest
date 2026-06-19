@@ -18,14 +18,11 @@ const slotSchema = new mongoose.Schema({
 }, { _id: true });
 
 const mealPlanSchema = new mongoose.Schema({
-  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  weekStart: { type: Date, required: true },
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   slots: [slotSchema],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
-
-mealPlanSchema.index({ userID: 1, weekStart: 1 });
 
 mealPlanSchema.pre('save', function (next) {
   this.updatedAt = new Date();

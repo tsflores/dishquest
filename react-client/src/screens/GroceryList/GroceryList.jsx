@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import AppShell from '../../components/layout/AppShell';
 import Spinner from '../../components/ui/Spinner';
 import Toast from '../../components/ui/Toast';
@@ -9,13 +9,11 @@ import { useGroceryList } from '../../hooks/useGroceryList';
 import { useMealPlan } from '../../hooks/useMealPlan';
 import { groceryListService } from '../../services/groceryListService';
 import { mealPlanService } from '../../services/mealPlanService';
-import { getMondayISO } from '../../utils/weekDates';
 import { GROCERY_CATEGORIES } from '../../utils/constants';
 
 export default function GroceryList() {
-  const weekStartISO = useMemo(() => getMondayISO(), []);
   const { lists, loading, reload } = useGroceryList();
-  const { plans } = useMealPlan(weekStartISO);
+  const { plans } = useMealPlan();
   const [generating, setGenerating] = useState(false);
   const [toast, setToast] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -29,7 +27,7 @@ export default function GroceryList() {
     try {
       let planId = plan?._id;
       if (!planId) {
-        const created = await mealPlanService.create(weekStartISO);
+        const created = await mealPlanService.create();
         planId = created._id;
       }
       await groceryListService.generate(planId);
@@ -77,7 +75,7 @@ export default function GroceryList() {
         ) : !list ? (
           <p className="text-sm text-gray-400 text-center py-10">
             {hasMeals
-              ? "You don't have a grocery list yet — generate one from this week's meal plan, or add items below."
+              ? "You don't have a grocery list yet — generate one from your meal plan, or add items below."
               : 'Plan some meals to generate a list automatically, or add items below.'}
           </p>
         ) : list.items.length === 0 ? (

@@ -2,33 +2,21 @@ const MealPlan = require('../models/mealPlanModel');
 const ExternalRecipeService = require('./externalRecipeController');
 
 class MealPlanService {
-  static async listForUser(userID, weekStart) {
-    const query = { userID };
-    if (weekStart) {
-      const start = new Date(weekStart);
-      const end = new Date(start);
-      end.setDate(end.getDate() + 7);
-      query.weekStart = { $gte: start, $lt: end };
-    }
-    return MealPlan.find(query).sort({ weekStart: -1 });
+  // One persistent plan per user — no calendar week, just generic
+  // Monday-Sunday slots the user adds to and removes from as needed.
+  static async listForUser(userID) {
+    return MealPlan.find({ userID });
   }
 
   static async find(id, userID) {
     return MealPlan.findOne({ _id: id, userID });
   }
 
-  static async create(userID, weekStart) {
-    const date = new Date(weekStart);
-    // Normalize to Monday of the given week
-    const day = date.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    date.setDate(date.getDate() + diff);
-    date.setHours(0, 0, 0, 0);
-
-    const existing = await MealPlan.findOne({ userID, weekStart: date });
+  static async create(userID) {
+    const existing = await MealPlan.findOne({ userID });
     if (existing) return existing;
 
-    const plan = new MealPlan({ userID, weekStart: date, slots: [] });
+    const plan = new MealPlan({ userID, slots: [] });
     return plan.save();
   }
 
@@ -66,27 +54,6 @@ class MealPlanService {
     return deleted;
   }
 
-  // A meal plan is only useful for its own week — once a new week starts,
-  // last week's plan (and any external recipes only referenced by it) should
-  // go away automatically rather than accumulate forever.
-  static async deleteExpired() {
-    const now = new Date();
-    const day = now.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    const monday = new Date(now);
-    monday.setDate(monday.getDate() + diff);
-    monday.setHours(0, 0, 0, 0);
-
-    const expiring = await MealPlan.find({ weekStart: { $lt: monday } });
-    for (const plan of expiring) {
-      const externalIds = plan.slots
-        .filter((s) => s.recipeSource === 'external')
-        .map((s) => s.recipeId);
-      await MealPlan.deleteOne({ _id: plan._id });
-      for (const recipeId of externalIds) await ExternalRecipeService.deleteIfOrphaned(recipeId);
-    }
-    return expiring.length;
-  }
 }
 
 module.exports = MealPlanService;

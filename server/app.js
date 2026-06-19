@@ -16,7 +16,6 @@ const groceryListRoutes = require('./routes/api/grocery-lists');
 const collectionRoutes = require('./routes/api/collections');
 const scrapeRoutes = require('./routes/api/scrape');
 const externalRecipeRoutes = require('./routes/api/external-recipes');
-const MealPlanService = require('./controllers/mealPlanController');
 const ExternalRecipeService = require('./controllers/externalRecipeController');
 
 
@@ -38,15 +37,15 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PWD}@clu
   process.exit();
 });
 
-// Expired meal plans (past weeks) and external recipes nobody saved to a
-// collection or meal plan (e.g. just viewed/scraped for a preview) would
-// otherwise accumulate forever — sweep both out periodically.
+// External recipes nobody saved to a collection or meal plan (e.g. just
+// viewed/scraped for a preview) would otherwise accumulate forever — sweep
+// orphans out periodically. Meal plans themselves are now a single
+// persistent record per user with no expiry concept.
 async function runMaintenance() {
   try {
-    const expiredPlans = await MealPlanService.deleteExpired();
     const prunedRecipes = await ExternalRecipeService.pruneAllOrphaned();
-    if (expiredPlans || prunedRecipes) {
-      console.log(`Maintenance: removed ${expiredPlans} expired meal plan(s), pruned ${prunedRecipes} orphaned external recipe(s).`);
+    if (prunedRecipes) {
+      console.log(`Maintenance: pruned ${prunedRecipes} orphaned external recipe(s).`);
     }
   } catch (err) {
     console.error('Maintenance job error:', err.message);

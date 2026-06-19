@@ -53,7 +53,7 @@ class GroceryListService {
     const list = new GroceryList({
       userID,
       mealPlanId,
-      title: `Week of ${plan.weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
+      title: `Grocery List - ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
       items,
     });
     return list.save();

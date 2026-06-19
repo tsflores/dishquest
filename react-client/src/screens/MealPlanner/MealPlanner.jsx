@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import AppShell from '../../components/layout/AppShell';
 import Spinner from '../../components/ui/Spinner';
 import WeekCalendarStrip from '../../components/meal-plan/WeekCalendarStrip';
@@ -7,7 +7,6 @@ import DailyMealsList from './DailyMealsList';
 import AddMealFAB from './AddMealFAB';
 import { useMealPlan } from '../../hooks/useMealPlan';
 import { mealPlanService } from '../../services/mealPlanService';
-import { getMondayISO, formatWeekLabel } from '../../utils/weekDates';
 import { WEEK_DAYS } from '../../utils/constants';
 
 function todayIndex() {
@@ -16,8 +15,7 @@ function todayIndex() {
 }
 
 export default function MealPlanner() {
-  const weekStartISO = useMemo(() => getMondayISO(), []);
-  const { plans, loading, reload } = useMealPlan(weekStartISO);
+  const { plans, loading, reload } = useMealPlan();
   const [selectedDay, setSelectedDay] = useState(todayIndex());
 
   const plan = plans[0] || null;
@@ -27,7 +25,7 @@ export default function MealPlanner() {
   const handleAdd = async (mealType, recipe) => {
     let planId = plan?._id;
     if (!planId) {
-      const created = await mealPlanService.create(weekStartISO);
+      const created = await mealPlanService.create();
       planId = created._id;
     }
     await mealPlanService.addSlot(planId, {
@@ -58,7 +56,7 @@ export default function MealPlanner() {
             </div>
           ) : (
             <>
-              <WeeklySummaryCard slots={slots} weekLabel={formatWeekLabel(weekStartISO)} />
+              <WeeklySummaryCard slots={slots} weekLabel="Weekly Plan" />
               <DailyMealsList slots={daySlots} onRemove={handleRemove} />
             </>
           )}

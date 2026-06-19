@@ -98,6 +98,18 @@ Phases 1, 2, and 3 are complete. This file tracks what's left.
 
 ---
 
+## Out-of-plan: Meal plan simplification — dropped calendar week, fixed planner not rendering (2026-06-19)
+
+Two related issues surfaced while wrapping up Phase 7:
+1. **Bug:** `GET /api/meal-plans` never returned the user's plan even though it existed in MongoDB. Root cause: the client computed `weekStart` as local-midnight-Monday and sent it as an ISO string; the server's `create()` then re-normalized that same instant using `getDay()`/`setHours()`, which run in the *server's* local timezone (UTC on the droplet) — shifting the stored `weekStart` outside the `$gte`/`$lt` window `listForUser()` queried with. Slots saved fine (hence visible directly in the DB); the list query just never matched them back. This is why "Add to Meal Plan" toasts succeeded but the planner stayed empty.
+2. **Decision:** rather than patch the timezone math, dropped the calendar-week concept entirely per user request — planning happens whenever (e.g. the Friday before), with full flexibility, and slots persist until manually removed instead of auto-expiring with the week.
+
+Changes: `mealPlanModel.js` dropped `weekStart`, added a unique index on `userID` (one persistent plan per user, slots already used generic `Monday`-`Sunday` day names, not dates — no slot-level changes needed). `mealPlanController.js`/`routes/api/meal-plans.js` simplified to `listForUser(userID)`/`create(userID)` with no date params; removed `deleteExpired()` entirely (the hourly maintenance job in `app.js` no longer sweeps "expired" plans — there's no expiry concept anymore). Client: `mealPlanService`, `useMealPlan`, `MealPlanner.jsx`, `WeeklyPlanPreview.jsx`, `GroceryList.jsx`, `ActionButtons.jsx` all dropped `weekStart`/`getMondayISO`/`formatWeekLabel`; deleted the now-fully-unused `utils/weekDates.js`. `groceryListController.js`'s list-title generation no longer reads `plan.weekStart` (was `Week of <date>`, now `Grocery List - <generated date>`).
+
+The one existing live MealPlan document (6 slots) needed no data migration — it was already a single doc per user, so the new unique index built cleanly; the stale leftover `weekStart` field on that document is harmless and ignored by the new schema. Verified live: Playwright against the running dev server + real Atlas DB confirmed all 6 existing slots now render in the Planner, and adding a 7th via the FAB rendered immediately post-toast with no manual refresh — then removed that test slot to leave production data untouched.
+
+---
+
 ## Phase 7 — Production Deployment + Cleanup
 
 ### Prep
